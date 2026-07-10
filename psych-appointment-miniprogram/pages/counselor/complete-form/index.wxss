@@ -1,0 +1,56 @@
+.summary-card {
+  border-color: #c9e6df;
+  background: #fbfffe;
+}
+
+.status-label {
+  color: #216b62;
+  font-size: 23rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.note-textarea {
+  min-height: 260rpx;
+}
+
+.plan-textarea {
+  min-height: 180rpx;
+}
+
+.select-row {
+  width: 100%;
+  min-height: 88rpx;
+  display: flex;
+  align-items: center;
+  padding: 20rpx 22rpx;
+  border: 1rpx solid #d7dde8;
+  border-radius: 12rpx;
+  background: #ffffff;
+  color: #17202a;
+  font-size: 28rpx;
+}
+
+.switch-row {
+  min-height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  margin-top: 24rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid #edf0f5;
+}
+
+.switch-title {
+  color: #101828;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.switch-note {
+  color: #667085;
+  font-size: 24rpx;
+  line-height: 1.5;
+  margin-top: 6rpx;
+}

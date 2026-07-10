@@ -1,0 +1,51 @@
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+**/project.private.config.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+
+# Student imports and local data exports
+*.xlsx
+*.xls
+*.csv
+*.tsv
+*.db
+*.sqlite
+*.sqlite3
+**/local-data/
+**/exports/
+
+# Build outputs and dependencies
+**/target/
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/coverage/
+**/.vite/
+
+# Runtime files
+**/logs/
+**/*.log
+**/uploads/
+**/tmp/
+**/temp/
+
+# IDE and operating system files
+.idea/
+**/.idea/
+.vscode/
+**/.vscode/
+*.iml
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini

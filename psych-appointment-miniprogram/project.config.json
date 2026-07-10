@@ -1,0 +1,24 @@
+{
+  "description": "School psychological appointment student mini program",
+  "packOptions": {
+    "ignore": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "compileHotReLoad": true,
+    "minifyWXML": true
+  },
+  "compileType": "miniprogram",
+  "libVersion": "latest",
+  "appid": "wx8b1d65e32bbb4bf8",
+  "projectname": "psych-appointment-student",
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  }
+}

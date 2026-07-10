@@ -1,0 +1,23 @@
+<view class="page with-bottom-action">
+  <view class="page-head">
+    <view class="page-title">心理咨询知情同意</view>
+    <view class="page-subtitle">请在预约前了解保密原则、咨询边界和取消规则。</view>
+  </view>
+
+  <view class="panel consent-card">
+    <view wx:for="{{sections}}" wx:key="title" class="consent-section">
+      <view class="section-title">{{item.title}}</view>
+      <view class="consent-text">{{item.body}}</view>
+    </view>
+  </view>
+
+  <view class="panel section warning-card">
+    <view class="section-title">紧急情况</view>
+    <view class="consent-text">如当前情况紧急，请不要等待预约确认，优先联系线下人员或紧急热线。</view>
+    <view class="inline-link emergency-link" bindtap="openEmergency">查看紧急求助</view>
+  </view>
+
+  <view class="bottom-action">
+    <button class="primary-button" bindtap="agreeAndBack">我已阅读并同意</button>
+  </view>
+</view>

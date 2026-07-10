@@ -1,0 +1,95 @@
+.profile-panel {
+  padding: 28rpx;
+}
+
+.expertise-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 20rpx;
+}
+
+.chip {
+  padding: 8rpx 14rpx;
+  border-radius: 8rpx;
+  color: #344054;
+  background: #f2f4f7;
+  font-size: 22rpx;
+}
+
+.profile-text {
+  color: #344054;
+  font-size: 26rpx;
+  line-height: 1.7;
+  margin-top: 10rpx;
+}
+
+.section-label {
+  color: #667085;
+  font-size: 23rpx;
+  font-weight: 650;
+  margin-top: 4rpx;
+}
+
+.training-label {
+  margin-top: 18rpx;
+}
+
+.slot-groups {
+  display: grid;
+  gap: 22rpx;
+}
+
+.date-title {
+  color: #344054;
+  font-size: 25rpx;
+  font-weight: 750;
+  margin-bottom: 14rpx;
+}
+
+.slot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16rpx;
+}
+
+.slot-card {
+  min-height: 150rpx;
+  padding: 20rpx;
+  border: 1rpx solid #e6e9ef;
+  border-radius: 16rpx;
+  background: #ffffff;
+}
+
+.slot-card.selected {
+  border-color: #216b62;
+  background: #eef7f5;
+}
+
+.slot-time {
+  color: #101828;
+  font-size: 26rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.slot-place {
+  margin-top: 8rpx;
+  color: #667085;
+  font-size: 23rpx;
+}
+
+.slot-mode {
+  display: inline-flex;
+  margin-top: 12rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 999rpx;
+  color: #216b62;
+  background: #eef7f5;
+  font-size: 21rpx;
+}
+
+.small-empty {
+  background: #ffffff;
+  border-radius: 16rpx;
+}

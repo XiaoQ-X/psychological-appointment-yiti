@@ -1,0 +1,42 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/student/counselors/index",
+    "pages/student/counselor-detail/index",
+    "pages/student/booking-form/index",
+    "pages/student/booking-result/index",
+    "pages/student/appointments/index",
+    "pages/student/appointment-detail/index",
+    "pages/student/emergency/index",
+    "pages/student/consent/index",
+    "pages/counselor/login/index",
+    "pages/counselor/appointments/index",
+    "pages/counselor/appointment-detail/index",
+    "pages/counselor/complete-form/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "心理预约",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f7f9",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#697386",
+    "selectedColor": "#216b62",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/student/counselors/index",
+        "text": "预约"
+      },
+      {
+        "pagePath": "pages/student/appointments/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}

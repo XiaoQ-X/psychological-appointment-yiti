@@ -1,0 +1,88 @@
+.login-page {
+  min-height: 100vh;
+  padding: 72rpx 32rpx 48rpx;
+  background: #f6f7f9;
+}
+
+.login-header {
+  margin-bottom: 28rpx;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin-bottom: 22rpx;
+}
+
+.brand-mark {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18rpx;
+  background: #216b62;
+  color: #ffffff;
+  font-size: 40rpx;
+  font-weight: 800;
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+.brand-kicker {
+  color: #216b62;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin-bottom: 4rpx;
+}
+
+.notice-panel {
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  background: #eef7f5;
+  border-color: #c9e6df;
+}
+
+.notice-title {
+  color: #216b62;
+  font-size: 28rpx;
+  font-weight: 750;
+}
+
+.notice-text {
+  color: #344054;
+  font-size: 24rpx;
+  line-height: 1.55;
+  margin: 8rpx 0 12rpx;
+}
+
+.login-panel {
+  padding: 28rpx;
+}
+
+.login-footer {
+  margin-top: 28rpx;
+  text-align: center;
+}
+
+.login-tip {
+  color: #667085;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 12rpx;
+  color: #216b62;
+  font-size: 24rpx;
+  margin-top: 16rpx;
+}
+
+.dot {
+  color: #98a2b3;
+}

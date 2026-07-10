@@ -1,0 +1,28 @@
+<view class="page">
+  <view class="panel status-panel {{panelClass}}">
+    <view class="status-title">{{statusTitle}}</view>
+    <view class="result-desc">{{statusDesc}}</view>
+    <view class="result-tag">
+      <text class="tag {{statusTag}}">{{resultStatusText}}</text>
+    </view>
+  </view>
+
+  <view class="panel section">
+    <view class="section-title">预约信息</view>
+    <view class="divider"></view>
+    <view class="info-row"><text>咨询师</text><text>{{counselorName}}</text></view>
+    <view class="info-row"><text>预约时间</text><text>{{slotTime}}</text></view>
+    <view class="info-row"><text>取消规则</text><text>{{cancelDeadlineText}}</text></view>
+  </view>
+
+  <view class="panel section" wx:if="{{isPendingReview}}">
+    <view class="section-title">紧急情况</view>
+    <view class="result-desc">审核等待期间，如果你觉得自己或他人可能处于危险中，请优先联系线下人员。</view>
+    <view class="inline-link emergency-link" bindtap="openEmergency">查看紧急求助方式</view>
+  </view>
+
+  <view class="button-stack">
+    <button class="primary-button" bindtap="openDetail">查看预约详情</button>
+    <button class="secondary-button" bindtap="openAppointments">返回我的预约</button>
+  </view>
+</view>

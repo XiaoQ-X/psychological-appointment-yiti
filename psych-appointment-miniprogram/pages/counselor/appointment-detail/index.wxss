@@ -1,0 +1,31 @@
+.status-card {
+  border-color: #c9e6df;
+}
+
+.status-label {
+  color: #216b62;
+  font-size: 23rpx;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.issue-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 18rpx;
+}
+
+.chip {
+  padding: 8rpx 14rpx;
+  border-radius: 8rpx;
+  color: #344054;
+  background: #f2f4f7;
+  font-size: 22rpx;
+}
+
+.reason-text {
+  color: #344054;
+  font-size: 26rpx;
+  line-height: 1.6;
+}

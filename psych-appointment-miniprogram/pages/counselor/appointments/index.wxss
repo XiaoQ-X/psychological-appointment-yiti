@@ -1,0 +1,27 @@
+.counselor-card {
+  margin-bottom: 20rpx;
+  border-color: #c9e6df;
+  background: #fbfffe;
+}
+
+.filter-scroll {
+  white-space: nowrap;
+  margin: 22rpx -28rpx 0;
+}
+
+.filter-row {
+  display: flex;
+  gap: 12rpx;
+  padding: 0 28rpx 8rpx;
+}
+
+.appointment-card.current {
+  border-color: #c9e6df;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 18rpx;
+}

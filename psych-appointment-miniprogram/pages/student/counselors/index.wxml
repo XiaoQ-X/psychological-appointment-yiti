@@ -1,0 +1,79 @@
+<view class="page">
+  <view class="row page-head">
+    <view>
+      <view class="page-title">选择咨询师</view>
+      <view class="page-subtitle">查看未来两周可预约的咨询师和时段。</view>
+    </view>
+    <button class="ghost-button" bindtap="logout">退出</button>
+  </view>
+
+  <view class="panel next-panel" bindtap="openNextAppointment">
+    <view class="row">
+      <view>
+        <view class="next-label">我的下一次预约</view>
+        <view class="next-title" wx:if="{{nextAppointment}}">{{nextAppointment.counselorText}}</view>
+        <view class="next-title" wx:else>暂无待到访预约</view>
+      </view>
+      <text wx:if="{{nextAppointment}}" class="tag {{nextAppointment.tagType}}">{{nextAppointment.statusText}}</text>
+      <text wx:else class="tag neutral">查看记录</text>
+    </view>
+    <view wx:if="{{nextAppointment}}" class="next-meta">{{nextAppointment.timeText}} · {{nextAppointment.placeText}}</view>
+    <view wx:else class="next-meta">完成预约后，可在这里快速查看时间、地点和状态。</view>
+  </view>
+
+  <view class="quick-grid">
+    <view class="quick-card" bindtap="openEmergency">
+      <view class="quick-title">紧急求助</view>
+      <view class="quick-text">无需登录也可查看</view>
+    </view>
+    <view class="quick-card muted-card" bindtap="openConsent">
+      <view class="quick-title">服务须知</view>
+      <view class="quick-text">保密原则与取消规则</view>
+    </view>
+  </view>
+
+  <scroll-view class="filter-scroll" scroll-x>
+    <view class="filter-row">
+      <view wx:for="{{filterChips}}" wx:key="label" class="filter-chip {{item.activeClass}}">
+        {{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{loading}}" class="empty">正在加载咨询师</view>
+
+  <view wx:elif="{{counselors.length == 0}}" class="empty">
+    暂无可预约咨询师，请稍后再试。
+  </view>
+
+  <view wx:else class="section card-list">
+    <view
+      wx:for="{{counselors}}"
+      wx:key="id"
+      class="card counselor-card"
+      data-id="{{item.id}}"
+      bindtap="openDetail"
+    >
+      <view class="row">
+        <view>
+          <view class="card-title">{{item.name}}</view>
+          <view class="card-meta">{{item.titleText}} · {{item.campusText}}</view>
+        </view>
+        <text class="tag {{item.slotTagType}}">
+          {{item.availableSlotCount}} 个时段
+        </text>
+      </view>
+
+      <view class="expertise-row" wx:if="{{item.expertise.length}}">
+        <text wx:for="{{item.expertise}}" wx:key="*this" class="chip">{{item}}</text>
+      </view>
+
+      <view class="card-meta" wx:if="{{item.nextAvailableText}}">
+        最近可约：{{item.nextAvailableText}}
+      </view>
+      <view class="card-meta" wx:else>
+        当前暂无可约时段
+      </view>
+    </view>
+  </view>
+</view>

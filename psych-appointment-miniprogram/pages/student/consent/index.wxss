@@ -1,0 +1,34 @@
+.consent-card {
+  padding: 28rpx;
+}
+
+.consent-section {
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #edf0f5;
+}
+
+.consent-section:first-child {
+  padding-top: 0;
+}
+
+.consent-section:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.consent-text {
+  color: #344054;
+  font-size: 26rpx;
+  line-height: 1.7;
+  margin-top: 12rpx;
+}
+
+.warning-card {
+  background: #fff7e6;
+  border-color: #f6d7a9;
+}
+
+.emergency-link {
+  display: block;
+  margin-top: 16rpx;
+}

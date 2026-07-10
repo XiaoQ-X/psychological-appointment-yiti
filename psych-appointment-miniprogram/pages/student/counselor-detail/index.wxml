@@ -1,0 +1,58 @@
+<view class="page with-bottom-action">
+  <view wx:if="{{loading}}" class="empty">正在加载详情</view>
+
+  <view wx:else>
+    <view class="panel profile-panel">
+      <view class="row">
+        <view>
+          <view class="page-title">{{counselor.name}}</view>
+          <view class="page-subtitle">{{counselor.titleText}} · {{counselor.campusText}}</view>
+        </view>
+        <text class="tag">{{counselor.slotCount}} 个时段</text>
+      </view>
+
+      <view class="expertise-row" wx:if="{{counselor.hasExpertise}}">
+        <text wx:for="{{counselor.expertise}}" wx:key="*this" class="chip">{{item}}</text>
+      </view>
+
+      <view class="divider"></view>
+      <view class="section-label">咨询师简介</view>
+      <view class="profile-text">{{counselor.introText}}</view>
+      <view class="section-label training-label" wx:if="{{counselor.trainingBackground}}">受训背景</view>
+      <view class="profile-text muted" wx:if="{{counselor.trainingBackground}}">
+        {{counselor.trainingBackground}}
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-head">
+        <view class="section-title">可预约时段</view>
+        <view class="section-note">未来两周</view>
+      </view>
+      <view wx:if="{{slots.length == 0}}" class="empty small-empty">暂无可预约时段</view>
+      <view wx:else class="slot-groups">
+        <view wx:for="{{slotGroups}}" wx:key="dateText" class="slot-group">
+          <view class="date-title">{{item.dateText}}</view>
+          <view class="slot-grid">
+            <view
+              wx:for="{{item.slots}}"
+              wx:for-item="slot"
+              wx:key="id"
+              class="slot-card {{slot.selectedClass}}"
+              data-id="{{slot.id}}"
+              bindtap="selectSlot"
+            >
+              <view class="slot-time">{{slot.timeOnlyText}}</view>
+              <view class="slot-place">{{slot.placeText}}</view>
+              <view class="slot-mode">{{slot.modeText}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-action">
+      <button class="primary-button" disabled="{{!selectedSlotId}}" bindtap="goBooking">填写预约信息</button>
+    </view>
+  </view>
+</view>
