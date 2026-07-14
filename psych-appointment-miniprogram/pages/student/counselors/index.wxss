@@ -1,79 +1,490 @@
-.next-panel {
-  background: #eef7f5;
-  border-color: #c9e6df;
-  margin-bottom: 18rpx;
+page {
+  background: #f7faf9;
+  background-image: none;
 }
 
-.next-label {
-  color: #216b62;
+.counselors-home {
+  min-height: 100vh;
+  padding: 20rpx 28rpx 44rpx;
+  background: #f7faf9;
+  color: #15262b;
+}
+
+.brand-row,
+.brand-lockup,
+.next-heading-row,
+.section-heading,
+.counselor-name-row,
+.availability-row {
+  display: flex;
+  align-items: center;
+}
+
+.brand-row {
+  justify-content: space-between;
+  gap: 20rpx;
+  min-height: 66rpx;
+  border-bottom: 4rpx solid #167a6e;
+}
+
+.brand-lockup {
+  min-width: 0;
+}
+
+.brand-name {
+  flex-shrink: 0;
+  color: #15262b;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.brand-divider {
+  width: 1rpx;
+  height: 30rpx;
+  margin: 0 16rpx;
+  background: #b8c5c2;
+}
+
+.brand-product {
+  min-width: 0;
+  color: #52656a;
+  font-size: 24rpx;
+  white-space: nowrap;
+}
+
+.logout-button {
+  width: auto;
+  min-width: 88rpx;
+  min-height: 56rpx;
+  margin: 0;
+  padding: 0 14rpx;
+  border: 0;
+  border-radius: 8rpx;
+  color: #52656a;
+  background: transparent;
+  font-size: 23rpx;
+}
+
+.logout-button::after {
+  border: 0;
+}
+
+.care-swiper {
+  height: 250rpx;
+  margin-top: 20rpx;
+}
+
+.care-banner {
+  position: relative;
+  height: 224rpx;
+  overflow: hidden;
+  border: 1rpx solid #b8d5cf;
+  border-radius: 8rpx;
+  background: #eaf5f3;
+}
+
+.care-banner-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.care-banner-copy {
+  position: relative;
+  z-index: 1;
+  width: 58%;
+  padding: 30rpx 0 24rpx 28rpx;
+}
+
+.care-banner-title {
+  color: #155f57;
+  font-size: 31rpx;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.care-banner-text {
+  margin-top: 10rpx;
+  color: #52656a;
+  font-size: 23rpx;
+  line-height: 1.45;
+}
+
+.care-banner-link {
+  margin-top: 16rpx;
+  color: #167a6e;
   font-size: 23rpx;
   font-weight: 700;
 }
 
-.next-title {
-  color: #101828;
-  font-size: 32rpx;
+.next-band {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  min-height: 150rpx;
+  margin-top: 10rpx;
+  padding: 22rpx 20rpx;
+  border-top: 1rpx solid #d9e2e0;
+  border-bottom: 1rpx solid #d9e2e0;
+  background: #f1f7f5;
+}
+
+.band-pressed {
+  opacity: 0.78;
+}
+
+.next-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 58rpx;
+  height: 58rpx;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e1f0ec;
+}
+
+.next-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.next-heading-row {
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.next-label {
+  color: #167a6e;
+  font-size: 27rpx;
   font-weight: 800;
-  margin-top: 6rpx;
+}
+
+.next-time {
+  margin-top: 7rpx;
+  color: #15262b;
+  font-size: 28rpx;
+  font-weight: 700;
 }
 
 .next-meta {
-  color: #475467;
-  font-size: 24rpx;
-  line-height: 1.5;
-  margin-top: 14rpx;
+  margin-top: 6rpx;
+  color: #52656a;
+  font-size: 23rpx;
+  line-height: 1.4;
 }
 
-.quick-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14rpx;
-  margin-bottom: 22rpx;
+.tag {
+  flex-shrink: 0;
+  padding: 6rpx 12rpx;
+  border-radius: 6rpx;
+  color: #167a6e;
+  background: #e1f0ec;
+  font-size: 22rpx;
+  font-weight: 700;
 }
 
-.quick-card {
-  min-height: 116rpx;
-  padding: 20rpx;
-  border-radius: 16rpx;
-  border: 1rpx solid #f6d7a9;
-  background: #fff7e6;
+.tag.warning {
+  color: #9a6518;
+  background: #fff4dd;
 }
 
-.quick-card.muted-card {
-  border-color: #e6e9ef;
+.date-section {
+  margin-top: 30rpx;
+}
+
+.section-heading {
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.section-title {
+  color: #15262b;
+  font-size: 31rpx;
+  font-weight: 800;
+}
+
+.section-note,
+.section-link {
+  color: #748388;
+  font-size: 23rpx;
+  line-height: 1.45;
+}
+
+.section-note {
+  margin-top: 5rpx;
+}
+
+.section-link {
+  min-height: 52rpx;
+  padding: 10rpx 0 0 20rpx;
+  color: #52656a;
+}
+
+.week-scroll {
+  margin-top: 16rpx;
+  white-space: nowrap;
+}
+
+.week-row {
+  display: inline-flex;
+  min-width: 100%;
+  border: 1rpx solid #d9e2e0;
+  border-radius: 8rpx;
   background: #ffffff;
 }
 
-.quick-title {
-  color: #101828;
-  font-size: 27rpx;
-  font-weight: 750;
+.date-cell {
+  width: 98rpx;
+  min-height: 142rpx;
+  flex-shrink: 0;
+  padding: 18rpx 8rpx 14rpx;
+  border-right: 1rpx solid #e2e9e7;
+  text-align: center;
 }
 
-.quick-text {
-  color: #667085;
+.date-cell:last-child {
+  border-right: 0;
+}
+
+.date-cell.active {
+  color: #ffffff;
+  background: #167a6e;
+}
+
+.date-cell.disabled {
+  color: #9ba7a5;
+}
+
+.date-weekday {
   font-size: 23rpx;
+  font-weight: 700;
+}
+
+.date-value {
+  margin-top: 10rpx;
+  font-size: 25rpx;
+}
+
+.date-count {
+  min-height: 32rpx;
   margin-top: 8rpx;
+  color: #748388;
+  font-size: 21rpx;
 }
 
-.filter-scroll {
-  white-space: nowrap;
-  margin: 4rpx 0 22rpx;
+.date-cell.active .date-count {
+  color: rgba(255, 255, 255, 0.86);
 }
 
-.filter-row {
-  display: inline-flex;
+.counselor-heading {
+  margin-top: 32rpx;
+  padding-bottom: 14rpx;
+  border-bottom: 1rpx solid #d9e2e0;
+}
+
+.counselor-list {
+  background: #ffffff;
+}
+
+.counselor-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+  min-width: 0;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #d9e2e0;
+}
+
+.counselor-avatar {
+  display: block;
+  width: 96rpx;
+  height: 96rpx;
+  flex-shrink: 0;
+  border: 2rpx solid #c9d8d5;
+  border-radius: 50%;
+  background: #edf4f2;
+}
+
+.counselor-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #167a6e;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.counselor-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.counselor-name-row {
   gap: 12rpx;
-  padding-bottom: 4rpx;
+  flex-wrap: wrap;
 }
 
-.counselor-card {
-  min-height: 190rpx;
+.counselor-name {
+  color: #15262b;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.verified-mark {
+  padding: 4rpx 9rpx;
+  border: 1rpx solid #9fc8bf;
+  border-radius: 4rpx;
+  color: #4d8067;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
+.counselor-title,
+.availability-row,
+.no-slot-note {
+  margin-top: 6rpx;
+  color: #52656a;
+  font-size: 23rpx;
+  line-height: 1.4;
 }
 
 .expertise-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10rpx;
-  margin-top: 18rpx;
+  gap: 8rpx;
+  margin-top: 10rpx;
+}
+
+.expertise-tag {
+  padding: 5rpx 10rpx;
+  border-radius: 4rpx;
+  color: #52656a;
+  background: #f0f3f2;
+  font-size: 21rpx;
+}
+
+.availability-row {
+  justify-content: space-between;
+  gap: 14rpx;
+}
+
+.slot-preview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12rpx;
+  margin-top: 14rpx;
+}
+
+.slot-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64rpx;
+  padding: 8rpx 10rpx;
+  border: 1rpx solid #76a9f5;
+  border-radius: 8rpx;
+  color: #3478e5;
+  background: #ffffff;
+  font-size: 21rpx;
+  white-space: nowrap;
+}
+
+.no-slot-note {
+  color: #748388;
+}
+
+.row-action {
+  flex-shrink: 0;
+  align-self: center;
+  color: #52656a;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.empty-state {
+  padding: 64rpx 30rpx;
+  border-bottom: 1rpx solid #d9e2e0;
+  text-align: center;
+}
+
+.empty-title {
+  color: #26393e;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.empty-text {
+  margin-top: 10rpx;
+  color: #748388;
+  font-size: 23rpx;
+  line-height: 1.5;
+}
+
+.empty-action {
+  width: 260rpx;
+  min-height: 76rpx;
+  margin: 22rpx auto 0;
+  border: 1rpx solid #9fc8bf;
+  border-radius: 8rpx;
+  color: #167a6e;
+  background: #eaf5f3;
+  font-size: 24rpx;
+}
+
+.empty-action::after {
+  border: 0;
+}
+
+.emergency-band {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-height: 104rpx;
+  margin-top: 28rpx;
+  padding: 18rpx 20rpx;
+  border-left: 5rpx solid #e85a47;
+  border-radius: 0 8rpx 8rpx 0;
+  background: #fff1ee;
+}
+
+.emergency-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.emergency-title {
+  color: #b04439;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.emergency-text {
+  margin-top: 5rpx;
+  color: #815a55;
+  font-size: 22rpx;
+  line-height: 1.4;
+}
+
+.emergency-arrow {
+  color: #c9473d;
+}
+
+@media (max-width: 360px) {
+  .brand-product {
+    font-size: 22rpx;
+  }
+
+  .care-banner-copy {
+    width: 62%;
+  }
+
+  .date-cell {
+    width: 92rpx;
+  }
 }

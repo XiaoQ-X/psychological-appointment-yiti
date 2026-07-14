@@ -27,5 +27,8 @@ public record StudentAppointmentDetailResponse(
         RiskLevel urgencyLevel,
         String contactTime,
         String cancelReason,
-        LocalDateTime canceledAt) {
+        LocalDateTime canceledAt,
+        boolean canCancel,
+        int minCancelHoursAhead,
+        LocalDateTime cancelDeadline) {
 }

@@ -1,0 +1,8 @@
+{
+  "finalPage": "pages/student/appointment-detail/index",
+  "screenshots": 12,
+  "realCancellationPerformed": false,
+  "phoneCallPerformed": false,
+  "exceptions": [],
+  "severeLogs": []
+}

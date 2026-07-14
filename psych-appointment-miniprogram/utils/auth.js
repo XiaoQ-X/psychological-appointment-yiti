@@ -15,6 +15,11 @@ function getRole() {
   return student && student.role ? student.role : '';
 }
 
+function requiresPasswordChange() {
+  const profile = getRole() === 'COUNSELOR' ? getCounselor() : getStudent();
+  return Boolean(profile && profile.forcePasswordChange);
+}
+
 function setSession(loginData) {
   wx.setStorageSync(TOKEN_KEY, loginData.accessToken);
   wx.removeStorageSync(COUNSELOR_KEY);
@@ -58,9 +63,29 @@ function clearSession() {
   wx.removeStorageSync(COUNSELOR_KEY);
 }
 
+function completePasswordChange(changeData) {
+  wx.setStorageSync(TOKEN_KEY, changeData.accessToken);
+  const role = getRole();
+  const storageKey = role === 'COUNSELOR' ? COUNSELOR_KEY : STUDENT_KEY;
+  const profile = role === 'COUNSELOR' ? getCounselor() : getStudent();
+  if (profile) {
+    profile.forcePasswordChange = false;
+    wx.setStorageSync(storageKey, profile);
+  }
+  return profile;
+}
+
+function openPasswordChange() {
+  wx.reLaunch({ url: '/pages/password-change/index' });
+}
+
 function ensureLogin() {
   if (!getToken() || getRole() !== 'STUDENT') {
     wx.reLaunch({ url: '/pages/login/login' });
+    return false;
+  }
+  if (requiresPasswordChange()) {
+    openPasswordChange();
     return false;
   }
   return true;
@@ -71,17 +96,24 @@ function ensureCounselorLogin() {
     wx.reLaunch({ url: '/pages/counselor/login/index' });
     return false;
   }
+  if (requiresPasswordChange()) {
+    openPasswordChange();
+    return false;
+  }
   return true;
 }
 
 module.exports = {
   getToken,
   getRole,
+  requiresPasswordChange,
   setSession,
   setCounselorSession,
   getStudent,
   getCounselor,
   clearSession,
+  completePasswordChange,
+  openPasswordChange,
   ensureLogin,
   ensureCounselorLogin
 };

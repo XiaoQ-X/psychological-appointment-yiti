@@ -1,0 +1,261 @@
+.booking-page {
+  background: #f8f7f1;
+}
+
+.booking-page.with-bottom-action {
+  padding-bottom: 220rpx;
+}
+
+.form-head {
+  position: relative;
+  z-index: 1;
+  padding: 12rpx 4rpx 0;
+}
+
+.form-kicker {
+  color: #d36f62;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin-bottom: 10rpx;
+}
+
+.summary-panel {
+  position: relative;
+  z-index: 1;
+  margin-top: 28rpx;
+  padding: 24rpx 26rpx;
+  border-left: 5rpx solid #7b9476;
+  border-radius: 14rpx;
+  background: #fefdf9;
+  box-shadow: 0 10rpx 24rpx rgba(54, 73, 62, 0.06);
+}
+
+.summary-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.summary-label {
+  color: #536454;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.summary-state {
+  padding: 5rpx 10rpx;
+  border-radius: 999rpx;
+  color: #536454;
+  background: #edf2e9;
+  font-size: 23rpx;
+}
+
+.summary-counselor {
+  margin-top: 12rpx;
+  color: #1f2a2d;
+  font-size: 31rpx;
+  font-weight: 750;
+}
+
+.summary-time {
+  margin-top: 6rpx;
+  color: #6d7770;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.form-panel,
+.consent-panel {
+  position: relative;
+  z-index: 1;
+  padding: 24rpx 26rpx;
+  border-radius: 14rpx;
+  background: #fefdf9;
+}
+
+.form-section-heading {
+  padding-left: 14rpx;
+  border-left: 4rpx solid #d7a64d;
+  color: #1f2a2d;
+  font-size: 29rpx;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.field-note {
+  margin-top: 8rpx;
+  color: #6d7770;
+  font-size: 23rpx;
+  line-height: 1.55;
+}
+
+.field {
+  margin-top: 26rpx;
+}
+
+.field-label {
+  color: #36423a;
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.choice-row {
+  display: flex;
+  gap: 36rpx;
+  margin-top: 12rpx;
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: #36423a;
+  font-size: 26rpx;
+}
+
+.choice-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 12rpx;
+}
+
+.chip-choice {
+  min-height: 58rpx;
+  padding: 10rpx 14rpx 10rpx 6rpx;
+  border: 1rpx solid #d8ded7;
+  border-radius: 8rpx;
+  background: #f5f7ef;
+  box-sizing: border-box;
+}
+
+.picker-text {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+}
+
+.risk-panel {
+  border-left: 5rpx solid #d7a64d;
+}
+
+.risk-panel .section-head {
+  align-items: flex-start;
+}
+
+.risk-list {
+  display: grid;
+  gap: 14rpx;
+  margin-top: 20rpx;
+}
+
+.risk-item {
+  min-height: 62rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 8rpx 4rpx;
+  color: #36423a;
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.risk-warning {
+  margin-top: 18rpx;
+  padding: 16rpx;
+  border: 1rpx solid #f0c978;
+  border-radius: 8rpx;
+  color: #8c5f12;
+  background: #fff8e8;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.consent-panel {
+  padding-top: 22rpx;
+  padding-bottom: 22rpx;
+  background: #f5f7ef;
+}
+
+.consent-kicker {
+  color: #6d7770;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.consent-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 12rpx;
+}
+
+.consent-version {
+  padding: 4rpx 9rpx;
+  border-radius: 5rpx;
+  color: #61785d;
+  background: #edf2e9;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  color: #36423a;
+  font-size: 25rpx;
+  line-height: 1.6;
+}
+
+.consent-copy {
+  flex: 1;
+}
+
+.inline-link {
+  color: #536f62;
+  text-decoration: underline;
+  text-decoration-color: #9eb4a3;
+}
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.required-label,
+.optional-label {
+  flex-shrink: 0;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.required-label {
+  color: #b65349;
+}
+
+.optional-label {
+  color: #7a847d;
+  font-weight: 500;
+}
+
+.submit-hint {
+  margin-bottom: 10rpx;
+  color: #7a847d;
+  font-size: 22rpx;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.submit-hint.ready {
+  color: #61785d;
+}
+
+.bottom-action .primary-button.disabled {
+  color: #8f9891;
+  background: #e1e5df;
+}

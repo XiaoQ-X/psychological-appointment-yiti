@@ -155,7 +155,19 @@ public class AdminAppointmentRuleService {
 
     private String toJson(AppointmentRuleSettings settings) {
         try {
-            return objectMapper.writeValueAsString(settings);
+            AppointmentRuleSettings normalized = settings.noShowRestrictThreshold() == null
+                    ? new AppointmentRuleSettings(
+                            settings.slotGapMinutes(),
+                            settings.slotLockMinutes(),
+                            settings.maxBookingDaysAhead(),
+                            settings.minBookingHoursAhead(),
+                            settings.minCancelHoursAhead(),
+                            settings.maxWeeklyAppointments(),
+                            settings.maxSemesterCompletedAppointments(),
+                            settings.maxActiveAppointments(),
+                            AppointmentRuleSettings.defaults().noShowRestrictThreshold())
+                    : settings;
+            return objectMapper.writeValueAsString(normalized);
         } catch (JsonProcessingException exception) {
             throw new IllegalArgumentException("Appointment rule settings are invalid", exception);
         }
@@ -173,7 +185,8 @@ public class AdminAppointmentRuleService {
                     settings.path("minCancelHoursAhead").asInt(defaults.minCancelHoursAhead()),
                     settings.path("maxWeeklyAppointments").asInt(defaults.maxWeeklyAppointments()),
                     settings.path("maxSemesterCompletedAppointments").asInt(defaults.maxSemesterCompletedAppointments()),
-                    settings.path("maxActiveAppointments").asInt(defaults.maxActiveAppointments()));
+                    settings.path("maxActiveAppointments").asInt(defaults.maxActiveAppointments()),
+                    settings.path("noShowRestrictThreshold").asInt(defaults.noShowRestrictThreshold()));
         } catch (JsonProcessingException exception) {
             return defaults;
         }

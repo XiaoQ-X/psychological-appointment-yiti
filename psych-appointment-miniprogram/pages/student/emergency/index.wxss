@@ -1,37 +1,293 @@
-.emergency-hero {
-  background: #fff7e6;
-  border-color: #f6d7a9;
+page {
+  background: #f7faf9;
 }
 
-.emergency-copy {
-  color: #344054;
-  font-size: 26rpx;
+.emergency-page {
+  min-height: 100vh;
+  padding: 32rpx 28rpx 60rpx;
+  color: #15262b;
+  background: #f7faf9;
+}
+
+.emergency-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 24rpx;
+  padding: 28rpx 10rpx 36rpx;
+  border-bottom: 1rpx solid #d9e2e0;
+}
+
+.warning-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 104rpx;
+  height: 104rpx;
+  flex-shrink: 0;
+  border: 5rpx solid #e85a47;
+  border-radius: 50%;
+  background: #fff1ee;
+}
+
+.hero-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.hero-title {
+  color: #e85a47;
+  font-size: 40rpx;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.hero-text {
+  margin-top: 14rpx;
+  color: #3f5157;
+  font-size: 25rpx;
   line-height: 1.65;
 }
 
-.contact-card {
-  padding: 26rpx;
+.immediate-section,
+.support-section,
+.school-section,
+.safety-section {
+  margin-top: 34rpx;
 }
 
-.call-button {
-  width: 112rpx;
-  min-height: 60rpx;
-  padding: 0;
-  margin: 0;
-  border-radius: 999rpx;
+.section-title {
+  color: #15262b;
+  font-size: 32rpx;
+  font-weight: 800;
+}
+
+.immediate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24rpx;
+  margin-top: 20rpx;
+}
+
+.immediate-item {
+  min-width: 0;
+}
+
+.immediate-item + .immediate-item {
+  padding-left: 24rpx;
+  border-left: 1rpx solid #d9e2e0;
+}
+
+.danger-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #e85a47;
+}
+
+.call-label {
+  margin-top: 16rpx;
+  color: #e85a47;
+  font-size: 27rpx;
+  font-weight: 800;
+}
+
+.call-number {
+  margin-top: 4rpx;
+  color: #e85a47;
+  font-size: 52rpx;
+  font-weight: 800;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.call-desc {
+  min-height: 100rpx;
+  margin-top: 12rpx;
+  color: #3f5157;
+  font-size: 23rpx;
+  line-height: 1.55;
+}
+
+.danger-call-button {
+  width: 100% !important;
+  min-height: 76rpx;
+  margin: 16rpx 0 0 !important;
+  border: 0;
+  border-radius: 8rpx;
   color: #ffffff;
-  background: #216b62;
+  background: #e85a47;
+  font-size: 25rpx;
+  font-weight: 800;
+}
+
+.danger-call-button::after {
+  border: 0;
+}
+
+.hotline-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-width: 0;
+  margin-top: 18rpx;
+  padding: 20rpx;
+  border: 2rpx solid #167a6e;
+  border-radius: 8rpx;
+  background: #ffffff;
+}
+
+.hotline-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72rpx;
+  height: 72rpx;
+  flex-shrink: 0;
+  border: 1rpx solid #9fc8bf;
+  border-radius: 50%;
+  background: #eaf5f3;
+}
+
+.hotline-number {
+  flex-shrink: 0;
+  color: #167a6e;
+  font-size: 40rpx;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.hotline-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.hotline-title {
+  color: #15262b;
   font-size: 24rpx;
+  font-weight: 800;
+}
+
+.hotline-desc {
+  margin-top: 4rpx;
+  color: #52656a;
+  font-size: 21rpx;
+  line-height: 1.45;
+}
+
+.hotline-button,
+.school-call-button {
+  width: 100rpx !important;
+  min-width: 100rpx;
+  min-height: 72rpx;
+  flex-shrink: 0;
+  margin: 0 !important;
+  padding: 0;
+  border: 0;
+  border-radius: 8rpx;
+  color: #ffffff;
+  background: #167a6e;
+  font-size: 23rpx;
+  font-weight: 800;
+}
+
+.hotline-button::after,
+.school-call-button::after {
+  border: 0;
+}
+
+.school-list,
+.safety-list {
+  margin-top: 16rpx;
+  border-top: 1rpx solid #d9e2e0;
+}
+
+.school-row {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  min-height: 124rpx;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #d9e2e0;
+}
+
+.school-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.school-title {
+  color: #15262b;
+  font-size: 25rpx;
+  font-weight: 800;
+}
+
+.school-desc,
+.school-phone {
+  margin-top: 5rpx;
+  color: #52656a;
+  font-size: 22rpx;
+  line-height: 1.45;
+}
+
+.school-phone {
+  color: #167a6e;
   font-weight: 700;
 }
 
-.phone-text {
-  color: #216b62;
-  font-size: 30rpx;
-  font-weight: 800;
-  margin-top: 18rpx;
+.safety-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 20rpx 4rpx;
+  border-bottom: 1rpx solid #d9e2e0;
 }
 
-.note-panel {
+.safety-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50rpx;
+  height: 50rpx;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #167a6e;
+  font-size: 23rpx;
+  font-weight: 800;
+}
+
+.safety-text {
+  flex: 1;
+  padding-top: 6rpx;
+  color: #3f5157;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.page-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 28rpx;
+  padding: 20rpx;
+  border: 1rpx solid #9fc8bf;
+  border-radius: 8rpx;
+  color: #3f5157;
   background: #ffffff;
+  font-size: 23rpx;
+  line-height: 1.55;
+}
+
+@media (max-width: 360px) {
+  .hotline-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .hotline-copy {
+    flex-basis: 220rpx;
+  }
 }

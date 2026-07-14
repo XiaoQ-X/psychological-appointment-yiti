@@ -25,6 +25,7 @@ class TokenServiceTest {
         assertThat(claims.username()).isEqualTo("admin");
         assertThat(claims.role()).isEqualTo(AccountRole.SUPER_ADMIN);
         assertThat(claims.expiresAtEpochSeconds()).isPositive();
+        assertThat(claims.passwordVersion()).isEmpty();
     }
 
     private void setId(Account account, Long id) {

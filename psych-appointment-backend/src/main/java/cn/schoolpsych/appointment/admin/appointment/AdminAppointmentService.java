@@ -6,18 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.schoolpsych.appointment.admin.audit.AuditActions;
 import cn.schoolpsych.appointment.admin.audit.AuditLogService;
 import cn.schoolpsych.appointment.admin.audit.AuditRequestMetadata;
 import cn.schoolpsych.appointment.domain.appointment.Appointment;
 import cn.schoolpsych.appointment.domain.appointment.AppointmentForm;
+import cn.schoolpsych.appointment.domain.appointment.AppointmentFormMetadata;
 import cn.schoolpsych.appointment.domain.appointment.AppointmentStatus;
 import cn.schoolpsych.appointment.domain.appointment.RiskAssessment;
 import cn.schoolpsych.appointment.domain.appointment.RiskLevel;
 import cn.schoolpsych.appointment.domain.appointment.RiskReviewStatus;
+import cn.schoolpsych.appointment.domain.appointment.RiskReviewMetadata;
+import cn.schoolpsych.appointment.domain.appointment.RiskScreeningAnswers;
 import cn.schoolpsych.appointment.domain.audit.SensitiveLevel;
 import cn.schoolpsych.appointment.domain.common.BaseEntity;
 import cn.schoolpsych.appointment.domain.counselor.Counselor;
@@ -38,6 +38,7 @@ import cn.schoolpsych.appointment.repository.RoomRepository;
 import cn.schoolpsych.appointment.repository.ServiceTypeRepository;
 import cn.schoolpsych.appointment.repository.StudentRepository;
 import cn.schoolpsych.appointment.security.AuthenticatedAccount;
+import cn.schoolpsych.appointment.security.AppointmentSensitiveDataService;
 import cn.schoolpsych.appointment.security.SensitiveDataEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +57,7 @@ public class AdminAppointmentService {
     private final RoomRepository roomRepository;
     private final ServiceTypeRepository serviceTypeRepository;
     private final SensitiveDataEncryptor sensitiveDataEncryptor;
-    private final ObjectMapper objectMapper;
+    private final AppointmentSensitiveDataService appointmentSensitiveData;
     private final AuditLogService auditLogService;
 
     public AdminAppointmentService(
@@ -71,7 +72,7 @@ public class AdminAppointmentService {
             RoomRepository roomRepository,
             ServiceTypeRepository serviceTypeRepository,
             SensitiveDataEncryptor sensitiveDataEncryptor,
-            ObjectMapper objectMapper,
+            AppointmentSensitiveDataService appointmentSensitiveData,
             AuditLogService auditLogService) {
         this.appointmentRepository = appointmentRepository;
         this.formRepository = formRepository;
@@ -84,7 +85,7 @@ public class AdminAppointmentService {
         this.roomRepository = roomRepository;
         this.serviceTypeRepository = serviceTypeRepository;
         this.sensitiveDataEncryptor = sensitiveDataEncryptor;
-        this.objectMapper = objectMapper;
+        this.appointmentSensitiveData = appointmentSensitiveData;
         this.auditLogService = auditLogService;
     }
 
@@ -126,6 +127,13 @@ public class AdminAppointmentService {
         Campus campus = relatedData.campuses().get(appointment.getCampusId());
         Room room = appointment.getRoomId() == null ? null : relatedData.rooms().get(appointment.getRoomId());
         ServiceType serviceType = relatedData.serviceTypes().get(appointment.getServiceTypeId());
+        AppointmentFormMetadata formMetadata = appointmentSensitiveData.readFormMetadata(form);
+        RiskScreeningAnswers riskAnswers = risk == null
+                ? new RiskScreeningAnswers(false, false, false, false, false, false)
+                : appointmentSensitiveData.readRiskAnswers(risk);
+        RiskReviewMetadata reviewMetadata = risk == null
+                ? new RiskReviewMetadata(null, null)
+                : appointmentSensitiveData.readReviewMetadata(risk);
         return new AdminAppointmentDetailResponse(
                 appointment.getId(),
                 appointment.getAppointmentNo(),
@@ -151,23 +159,23 @@ public class AdminAppointmentService {
                 appointment.getStartAt(),
                 appointment.getEndAt(),
                 form != null && form.isFirstVisit(),
-                form == null ? List.of() : readJsonList(form.getIssueTypesJson()),
-                form == null ? null : form.getUrgencyLevel(),
-                form == null ? null : form.getContactTime(),
-                risk != null && risk.isSelfHarm(),
-                risk != null && risk.isHarmOthers(),
-                risk != null && risk.isCrisisEvent(),
-                risk != null && risk.isPsychiatricTreatment(),
-                risk != null && risk.isMedication(),
-                risk != null && risk.isWillingContact(),
+                formMetadata.issueTypes(),
+                formMetadata.urgencyLevel(),
+                formMetadata.contactTime(),
+                riskAnswers.selfHarm(),
+                riskAnswers.harmOthers(),
+                riskAnswers.crisisEvent(),
+                riskAnswers.psychiatricTreatment(),
+                riskAnswers.medication(),
+                riskAnswers.willingContact(),
                 risk == null ? null : risk.getReviewStatus(),
-                risk == null ? null : risk.getReviewedBy(),
-                risk == null ? null : risk.getReviewedAt(),
+                reviewMetadata.reviewedBy(),
+                reviewMetadata.reviewedAt(),
                 referral == null ? null : referral.getId(),
                 referral == null ? null : referral.getReferralType(),
-                referral == null ? null : referral.getDestination(),
+                appointmentSensitiveData.readReferralDestination(referral),
                 referral == null ? null : referral.getStatus(),
-                appointment.getCancelReason(),
+                appointmentSensitiveData.readCancellationReason(appointment),
                 appointment.getCanceledAt(),
                 appointment.getCompletedAt());
     }
@@ -185,7 +193,7 @@ public class AdminAppointmentService {
         }
         AppointmentSlot slot = slotRepository.findByIdForUpdate(appointment.getSlotId())
                 .orElseThrow(() -> new IllegalArgumentException("Slot not found"));
-        appointment.cancelByAdmin(principal.accountId(), trimToNull(request.reason()));
+        appointment.cancelByAdmin(principal.accountId(), appointmentSensitiveData.encryptText(request.reason()));
         slot.releaseBooking(appointment.getId());
         appointmentRepository.save(appointment);
         slotRepository.save(slot);
@@ -231,27 +239,29 @@ public class AdminAppointmentService {
 
         Referral referral = null;
         byte[] handlingNotes = sensitiveDataEncryptor.encryptNullable(request.handlingNotes());
+        LocalDateTime reviewedAt = LocalDateTime.now();
+        byte[] reviewMetadata = appointmentSensitiveData.encryptReviewMetadata(principal.accountId(), reviewedAt);
         switch (request.decision()) {
             case APPROVE -> {
                 appointment.approveRiskReview();
-                risk.review(RiskReviewStatus.APPROVED, principal.accountId(), handlingNotes);
+                risk.review(RiskReviewStatus.APPROVED, handlingNotes, reviewMetadata);
             }
             case REFER -> {
                 requireReferralFields(request);
                 appointment.referAfterRiskReview();
-                risk.review(RiskReviewStatus.REFERRED, principal.accountId(), handlingNotes);
+                risk.review(RiskReviewStatus.REFERRED, handlingNotes, reviewMetadata);
                 referral = referralRepository.save(Referral.open(
                         appointment.getId(),
                         appointment.getStudentId(),
                         appointment.getCounselorId(),
                         request.referralType(),
-                        request.referralDestination().trim(),
+                        appointmentSensitiveData.encryptText(request.referralDestination()),
                         sensitiveDataEncryptor.encryptNullable(request.referralReason())));
                 slot.releaseBooking(appointment.getId());
             }
             case CLOSE -> {
                 appointment.closeAfterRiskReview();
-                risk.review(RiskReviewStatus.CLOSED, principal.accountId(), handlingNotes);
+                risk.review(RiskReviewStatus.CLOSED, handlingNotes, reviewMetadata);
                 slot.releaseBooking(appointment.getId());
             }
         }
@@ -263,11 +273,11 @@ public class AdminAppointmentService {
                 appointment.getAppointmentNo(),
                 appointment.getStatus(),
                 risk.getReviewStatus(),
-                risk.getReviewedBy(),
-                risk.getReviewedAt(),
+                principal.accountId(),
+                reviewedAt,
                 referral == null ? null : referral.getId(),
                 referral == null ? null : referral.getReferralType(),
-                referral == null ? null : referral.getDestination(),
+                appointmentSensitiveData.readReferralDestination(referral),
                 referral == null ? null : referral.getStatus(),
                 slot.getId(),
                 slot.getStatus());
@@ -383,18 +393,6 @@ public class AdminAppointmentService {
             throw new IllegalArgumentException("to must not be before from");
         }
         return new DateRange(fromAt, toAt);
-    }
-
-    private List<String> readJsonList(String json) {
-        if (json == null || json.isBlank()) {
-            return List.of();
-        }
-        try {
-            return objectMapper.readValue(json, new TypeReference<>() {
-            });
-        } catch (JsonProcessingException exception) {
-            return List.of();
-        }
     }
 
     private String trimToNull(String value) {

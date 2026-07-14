@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,6 +19,7 @@ import cn.schoolpsych.appointment.domain.appointment.AppointmentSlotSnapshot;
 import cn.schoolpsych.appointment.domain.appointment.AppointmentStatus;
 import cn.schoolpsych.appointment.domain.appointment.RiskAssessment;
 import cn.schoolpsych.appointment.domain.appointment.RiskLevel;
+import cn.schoolpsych.appointment.domain.appointment.RiskScreeningAnswers;
 import cn.schoolpsych.appointment.domain.consent.ConsentRecord;
 import cn.schoolpsych.appointment.domain.consent.ConsentVersion;
 import cn.schoolpsych.appointment.domain.rule.AppointmentRuleSet;
@@ -35,6 +37,7 @@ import cn.schoolpsych.appointment.repository.RiskAssessmentRepository;
 import cn.schoolpsych.appointment.repository.SchoolTermRepository;
 import cn.schoolpsych.appointment.repository.StudentRepository;
 import cn.schoolpsych.appointment.security.AuthenticatedAccount;
+import cn.schoolpsych.appointment.security.AppointmentSensitiveDataService;
 import cn.schoolpsych.appointment.security.SensitiveDataEncryptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,12 +46,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudentAppointmentService {
 
     private static final int DEFAULT_SLOT_LOCK_MINUTES = 10;
-    private static final int DEFAULT_MIN_CANCEL_HOURS_AHEAD = 24;
     private static final int DEFAULT_MIN_BOOKING_HOURS_AHEAD = 24;
     private static final int DEFAULT_MAX_BOOKING_DAYS_AHEAD = 14;
     private static final int DEFAULT_MAX_ACTIVE_APPOINTMENTS = 1;
     private static final int DEFAULT_MAX_WEEKLY_APPOINTMENTS = 1;
     private static final int DEFAULT_MAX_SEMESTER_COMPLETED_APPOINTMENTS = 8;
+    private static final int DEFAULT_NO_SHOW_RESTRICT_THRESHOLD = 2;
 
     private static final List<AppointmentStatus> ACTIVE_STATUSES = List.of(
             AppointmentStatus.SUBMITTED,
@@ -68,6 +71,14 @@ public class StudentAppointmentService {
             AppointmentStatus.NO_SHOW,
             AppointmentStatus.COMPLETED);
 
+    private static final Set<String> SUPPORTED_ISSUE_TYPES = Set.of(
+            "academic-stress",
+            "emotion",
+            "relationship",
+            "family",
+            "sleep",
+            "career");
+
     private final StudentRepository studentRepository;
     private final AppointmentSlotRepository slotRepository;
     private final AppointmentRepository appointmentRepository;
@@ -78,7 +89,9 @@ public class StudentAppointmentService {
     private final AppointmentRuleSetRepository ruleSetRepository;
     private final SchoolTermRepository schoolTermRepository;
     private final SensitiveDataEncryptor sensitiveDataEncryptor;
+    private final AppointmentSensitiveDataService appointmentSensitiveData;
     private final ObjectMapper objectMapper;
+    private final StudentCancellationPolicy cancellationPolicy;
 
     public StudentAppointmentService(
             StudentRepository studentRepository,
@@ -91,7 +104,9 @@ public class StudentAppointmentService {
             AppointmentRuleSetRepository ruleSetRepository,
             SchoolTermRepository schoolTermRepository,
             SensitiveDataEncryptor sensitiveDataEncryptor,
-            ObjectMapper objectMapper) {
+            AppointmentSensitiveDataService appointmentSensitiveData,
+            ObjectMapper objectMapper,
+            StudentCancellationPolicy cancellationPolicy) {
         this.studentRepository = studentRepository;
         this.slotRepository = slotRepository;
         this.appointmentRepository = appointmentRepository;
@@ -102,7 +117,9 @@ public class StudentAppointmentService {
         this.ruleSetRepository = ruleSetRepository;
         this.schoolTermRepository = schoolTermRepository;
         this.sensitiveDataEncryptor = sensitiveDataEncryptor;
+        this.appointmentSensitiveData = appointmentSensitiveData;
         this.objectMapper = objectMapper;
+        this.cancellationPolicy = cancellationPolicy;
     }
 
     @Transactional
@@ -112,8 +129,8 @@ public class StudentAppointmentService {
         AppointmentRuleSet ruleSet = activeRuleSet();
         JsonNode settings = readSettings(ruleSet.getSettingsJson()).orElseGet(objectMapper::createObjectNode);
         Student student = lockedStudent(principal.accountId());
-        ensureStudentCanBook(student, now);
-        ensureActiveAppointmentLimit(student.getId(), settings);
+        ensureStudentCanBook(student, now, settings);
+        ensureActiveAppointmentLimit(student.getId(), settings, now);
 
         releaseStudentLocks(student.getId(), slotId);
         AppointmentSlot slot = slotRepository.findByIdForUpdate(slotId)
@@ -145,12 +162,13 @@ public class StudentAppointmentService {
         if (!request.consentAgreed()) {
             throw new IllegalArgumentException("Consent must be agreed before submitting appointment");
         }
+        ensureSupportedIssueTypes(request.issueTypes());
 
         AppointmentRuleSet ruleSet = activeRuleSet();
         JsonNode settings = readSettings(ruleSet.getSettingsJson()).orElseGet(objectMapper::createObjectNode);
         Student student = lockedStudent(principal.accountId());
-        ensureStudentCanBook(student, now);
-        ensureActiveAppointmentLimit(student.getId(), settings);
+        ensureStudentCanBook(student, now, settings);
+        ensureActiveAppointmentLimit(student.getId(), settings, now);
 
         AppointmentSlot slot = slotRepository.findByIdForUpdate(request.slotId())
                 .orElseThrow(() -> new IllegalArgumentException("Slot not found"));
@@ -165,6 +183,9 @@ public class StudentAppointmentService {
 
         ConsentVersion consentVersion = consentVersionRepository.findFirstByStatusOrderByPublishedAtDesc("PUBLISHED")
                 .orElseThrow(() -> new IllegalArgumentException("No published consent version"));
+        if (!consentVersion.getId().equals(request.consentVersionId())) {
+            throw new IllegalArgumentException("Consent version has changed; please review the latest version");
+        }
         SchoolTerm term = currentSchoolTerm();
         ensureSemesterCompletedLimit(student.getId(), term.getId(), settings);
 
@@ -189,20 +210,20 @@ public class StudentAppointmentService {
         formRepository.save(AppointmentForm.create(
                 appointment.getId(),
                 request.firstVisit(),
-                toJson(request.issueTypes()),
+                appointmentSensitiveData.encryptFormMetadata(
+                        request.issueTypes(), request.urgencyLevel(), request.contactTime()),
                 sensitiveDataEncryptor.encryptNullable(request.description()),
-                sensitiveDataEncryptor.encryptNullable(request.expectedHelp()),
-                request.urgencyLevel(),
-                request.contactTime()));
+                sensitiveDataEncryptor.encryptNullable(request.expectedHelp())));
 
         riskAssessmentRepository.save(RiskAssessment.create(
                 appointment.getId(),
-                request.risk().selfHarm(),
-                request.risk().harmOthers(),
-                request.risk().crisisEvent(),
-                request.risk().psychiatricTreatment(),
-                request.risk().medication(),
-                request.risk().willingContact(),
+                appointmentSensitiveData.encryptRiskAnswers(new RiskScreeningAnswers(
+                        request.risk().selfHarm(),
+                        request.risk().harmOthers(),
+                        request.risk().crisisEvent(),
+                        request.risk().psychiatricTreatment(),
+                        request.risk().medication(),
+                        request.risk().willingContact())),
                 riskLevel));
 
         return new SubmitAppointmentResponse(
@@ -228,14 +249,17 @@ public class StudentAppointmentService {
         if (!appointment.canBeCanceledByStudent(now)) {
             throw new IllegalArgumentException("Appointment cannot be canceled by student");
         }
-        int minCancelHoursAhead = minCancelHoursAhead();
-        if (appointment.getStartAt().isBefore(now.plusHours(minCancelHoursAhead))) {
-            throw new IllegalArgumentException("Appointment cannot be canceled within " + minCancelHoursAhead + " hours before start");
+        StudentCancellationPolicy.CancellationAvailability cancellation = cancellationPolicy.evaluate(appointment, now);
+        if (!cancellation.canCancel()) {
+            throw new IllegalArgumentException(
+                    "Appointment cannot be canceled within "
+                            + cancellation.minCancelHoursAhead()
+                            + " hours before start");
         }
 
         AppointmentSlot slot = slotRepository.findByIdForUpdate(appointment.getSlotId())
                 .orElseThrow(() -> new IllegalArgumentException("Slot not found"));
-        appointment.cancelByStudent(principal.accountId(), trimToNull(request.reason()));
+        appointment.cancelByStudent(principal.accountId(), appointmentSensitiveData.encryptText(request.reason()));
         slot.releaseBooking(appointment.getId());
         appointmentRepository.save(appointment);
         slotRepository.save(slot);
@@ -253,15 +277,18 @@ public class StudentAppointmentService {
                 .orElseThrow(() -> new IllegalArgumentException("Student account not found"));
     }
 
-    private void ensureStudentCanBook(Student student, LocalDateTime now) {
-        if (!student.canBookNow(now)) {
+    private void ensureStudentCanBook(Student student, LocalDateTime now, JsonNode settings) {
+        int noShowRestrictThreshold = settings.path("noShowRestrictThreshold")
+                .asInt(DEFAULT_NO_SHOW_RESTRICT_THRESHOLD);
+        if (!student.canBookNow(now, noShowRestrictThreshold)) {
             throw new IllegalArgumentException("Student is not allowed to book appointments");
         }
     }
 
-    private void ensureActiveAppointmentLimit(Long studentId, JsonNode settings) {
+    private void ensureActiveAppointmentLimit(Long studentId, JsonNode settings, LocalDateTime now) {
         int maxActiveAppointments = settings.path("maxActiveAppointments").asInt(DEFAULT_MAX_ACTIVE_APPOINTMENTS);
-        if (appointmentRepository.countByStudentIdAndStatusIn(studentId, ACTIVE_STATUSES) >= maxActiveAppointments) {
+        if (appointmentRepository.countByStudentIdAndStatusInAndEndAtAfter(studentId, ACTIVE_STATUSES, now)
+                >= maxActiveAppointments) {
             throw new IllegalArgumentException("Student has reached the active appointment limit");
         }
     }
@@ -332,11 +359,11 @@ public class StudentAppointmentService {
         return RiskLevel.LOW;
     }
 
-    private String toJson(List<String> issueTypes) {
-        try {
-            return objectMapper.writeValueAsString(issueTypes);
-        } catch (JsonProcessingException exception) {
-            throw new IllegalArgumentException("Issue type format is invalid", exception);
+    static void ensureSupportedIssueTypes(List<String> issueTypes) {
+        for (String issueType : issueTypes) {
+            if (!SUPPORTED_ISSUE_TYPES.contains(issueType)) {
+                throw new IllegalArgumentException("Unsupported appointment issue type: " + issueType);
+            }
         }
     }
 
@@ -348,18 +375,6 @@ public class StudentAppointmentService {
 
     private int slotLockMinutes(JsonNode settings) {
         return settings.path("slotLockMinutes").asInt(DEFAULT_SLOT_LOCK_MINUTES);
-    }
-
-    private int minCancelHoursAhead() {
-        return activeRuleSettings()
-                .map(settings -> settings.path("minCancelHoursAhead").asInt(DEFAULT_MIN_CANCEL_HOURS_AHEAD))
-                .orElse(DEFAULT_MIN_CANCEL_HOURS_AHEAD);
-    }
-
-    private Optional<JsonNode> activeRuleSettings() {
-        return ruleSetRepository.findFirstByActiveTrueOrderByEffectiveFromDesc()
-                .map(AppointmentRuleSet::getSettingsJson)
-                .flatMap(this::readSettings);
     }
 
     private Optional<JsonNode> readSettings(String settingsJson) {

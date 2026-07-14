@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "images": {
+    "redis": {
+      "tag": "redis:7.4-alpine",
+      "reference": "redis:7.4-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99",
+      "digest": "sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99",
+      "version": "7.4.9-alpine",
+      "source": "https://github.com/redis/docker-library-redis.git",
+      "sourceRevision": "2b76f51f4af2f8586e137c49c55bfedb41d6751c",
+      "reviewedAt": "2026-07-14",
+      "provenance": {
+        "platform": {
+          "os": "linux",
+          "architecture": "amd64"
+        },
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "attestationManifestDigest": "sha256:c97a2f5364ffcea66c7ab8200d0ffe0b8044b95f960ab7209f07e5fcc2c55356"
+      }
+    }
+  }
+}

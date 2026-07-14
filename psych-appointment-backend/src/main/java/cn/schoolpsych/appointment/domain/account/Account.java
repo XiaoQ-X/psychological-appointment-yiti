@@ -1,6 +1,7 @@
 package cn.schoolpsych.appointment.domain.account;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import cn.schoolpsych.appointment.domain.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -76,6 +77,19 @@ public class Account extends BaseEntity {
         }
     }
 
+    public void changePassword(String passwordHash) {
+        this.passwordHash = passwordHash;
+        this.forcePasswordChange = false;
+        this.passwordChangedAt = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
+        this.loginFailCount = 0;
+        this.lockedUntil = null;
+        this.status = AccountStatus.ACTIVE;
+    }
+
+    public String passwordVersion() {
+        return this.passwordChangedAt == null ? "" : this.passwordChangedAt.toString();
+    }
+
     public boolean isLockedNow() {
         return this.status == AccountStatus.LOCKED
                 && this.lockedUntil != null
@@ -108,5 +122,17 @@ public class Account extends BaseEntity {
 
     public boolean isForcePasswordChange() {
         return forcePasswordChange;
+    }
+
+    public int getLoginFailCount() {
+        return loginFailCount;
+    }
+
+    public LocalDateTime getLockedUntil() {
+        return lockedUntil;
+    }
+
+    public LocalDateTime getPasswordChangedAt() {
+        return passwordChangedAt;
     }
 }

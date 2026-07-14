@@ -1,0 +1,75 @@
+<view class="page emergency-page">
+  <view class="emergency-hero">
+    <view class="warning-mark"><icon type="warn" size="38" color="#d36f62" /></view>
+    <view class="page-kicker">紧急支持</view>
+    <view class="page-title">先保证此刻安全</view>
+    <view class="emergency-copy">若你或他人可能立即受到伤害，请直接拨打紧急电话。线上预约不能替代即时危机处理。</view>
+  </view>
+
+  <view class="immediate-section">
+    <view class="section-heading">
+      <view class="section-title">立即危险</view>
+      <view class="section-note">优先拨打</view>
+    </view>
+    <view class="immediate-grid">
+      <button
+        wx:for="{{immediateContacts}}"
+        wx:key="phone"
+        class="immediate-call {{item.tone}}"
+        data-phone="{{item.phone}}"
+        bindtap="callPhone"
+      >
+        <view class="call-label">{{item.title}}</view>
+        <view class="call-number">{{item.phone}}</view>
+        <view class="call-desc">{{item.desc}}</view>
+        <view class="call-action">立即拨打</view>
+      </button>
+    </view>
+  </view>
+
+  <view class="support-section">
+    <view class="section-title">心理支持</view>
+    <view class="hotline-row">
+      <view class="hotline-head">
+        <view class="hotline-number">{{psychologicalHotline.phone}}</view>
+        <view class="hotline-title">{{psychologicalHotline.title}}</view>
+      </view>
+      <view class="hotline-desc">{{psychologicalHotline.desc}}</view>
+      <button class="hotline-button" data-phone="{{psychologicalHotline.phone}}" bindtap="callPhone">拨打</button>
+    </view>
+    <view class="hotline-note">心理援助热线不替代 110、120 等紧急救援服务。</view>
+  </view>
+
+  <view class="school-section" wx:if="{{hasSchoolContacts}}">
+    <view class="section-heading">
+      <view class="section-title">校内支持</view>
+      <view class="section-note">校内可用渠道</view>
+    </view>
+    <view class="school-list">
+      <view wx:for="{{schoolContacts}}" wx:key="title" class="school-row">
+        <view class="school-main">
+          <view class="school-title">{{item.title}}</view>
+          <view class="school-desc">{{item.desc}}</view>
+          <view class="school-phone">{{item.phoneText}}</view>
+        </view>
+        <button
+          class="school-call-button"
+          data-phone="{{item.phone}}"
+          bindtap="callPhone"
+        >{{item.actionText}}</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="safety-section">
+    <view class="section-title">等待援助时</view>
+    <view class="safety-list">
+      <view wx:for="{{safetySteps}}" wx:key="*this" class="safety-row">
+        <view class="safety-number">{{index + 1}}</view>
+        <view class="safety-text">{{item}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-note">本页无需登录即可访问。若电话暂时未接通，请尝试其他渠道，并优先联系身边可信任的人。</view>
+</view>

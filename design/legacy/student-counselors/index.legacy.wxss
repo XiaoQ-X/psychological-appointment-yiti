@@ -1,0 +1,79 @@
+.next-panel {
+  background: #eef7f5;
+  border-color: #c9e6df;
+  margin-bottom: 18rpx;
+}
+
+.next-label {
+  color: #216b62;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.next-title {
+  color: #101828;
+  font-size: 32rpx;
+  font-weight: 800;
+  margin-top: 6rpx;
+}
+
+.next-meta {
+  color: #475467;
+  font-size: 24rpx;
+  line-height: 1.5;
+  margin-top: 14rpx;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14rpx;
+  margin-bottom: 22rpx;
+}
+
+.quick-card {
+  min-height: 116rpx;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  border: 1rpx solid #f6d7a9;
+  background: #fff7e6;
+}
+
+.quick-card.muted-card {
+  border-color: #e6e9ef;
+  background: #ffffff;
+}
+
+.quick-title {
+  color: #101828;
+  font-size: 27rpx;
+  font-weight: 750;
+}
+
+.quick-text {
+  color: #667085;
+  font-size: 23rpx;
+  margin-top: 8rpx;
+}
+
+.filter-scroll {
+  white-space: nowrap;
+  margin: 4rpx 0 22rpx;
+}
+
+.filter-row {
+  display: inline-flex;
+  gap: 12rpx;
+  padding-bottom: 4rpx;
+}
+
+.counselor-card {
+  min-height: 190rpx;
+}
+
+.expertise-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 18rpx;
+}

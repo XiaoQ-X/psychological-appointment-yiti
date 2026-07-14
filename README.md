@@ -94,6 +94,25 @@ npm run lint
 npm run build
 ```
 
+小程序 JavaScript 语法检查：
+
+```powershell
+cd psych-appointment-miniprogram
+Get-ChildItem -Recurse -Filter *.js | ForEach-Object { node --check $_.FullName }
+```
+
+## 上线前部署
+
+生产 Profile、Docker Compose 模板和发布检查表位于 [`deploy`](deploy/README.md)。模板不会携带真实域名、证书、密钥或学校数据，也不会自动发布到生产环境。
+
+```powershell
+cd deploy
+Copy-Item production.env.example .env
+docker compose --env-file .env -f docker-compose.prod.yml config
+```
+
+正式发布前逐项完成 [`deploy/PRE_RELEASE_CHECKLIST.md`](deploy/PRE_RELEASE_CHECKLIST.md)。
+
 ## 产品文档
 
 - [竞品调研](心理预约微信小程序竞品调研.md)
@@ -109,4 +128,4 @@ npm run build
 
 ## 当前阶段
 
-核心 MVP 和三端骨架已完成，下一阶段重点是微信真实登录、消息通知、统计报表、完整审计覆盖、生产安全加固和内测部署。
+核心 MVP、三端主要业务闭环、最终视觉风格延展和生产部署骨架已完成。当前处于上线前验收阶段，尚需确定正式域名与证书、学校联系人、微信隐私合规材料，完成标准安全扫描、体验版真机回归和内测发布审批。

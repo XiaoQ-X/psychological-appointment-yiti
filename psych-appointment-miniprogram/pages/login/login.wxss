@@ -1,88 +1,270 @@
-.login-page {
+page {
+  min-height: 100%;
+  background: #f7faf9;
+  background-image: none;
+}
+
+.student-login {
   min-height: 100vh;
-  padding: 72rpx 32rpx 48rpx;
-  background: #f6f7f9;
+  padding: 24rpx 30rpx 44rpx;
+  background: #f7faf9;
+  color: #15262b;
 }
 
-.login-header {
-  margin-bottom: 28rpx;
-}
-
-.brand-row {
+.login-brand {
   display: flex;
   align-items: center;
-  gap: 22rpx;
-  margin-bottom: 22rpx;
+  min-width: 0;
+  padding: 4rpx 2rpx 18rpx;
+  border-bottom: 4rpx solid #167a6e;
 }
 
-.brand-mark {
-  width: 88rpx;
-  height: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 18rpx;
-  background: #216b62;
-  color: #ffffff;
-  font-size: 40rpx;
+.login-brand-name {
+  flex-shrink: 0;
+  color: #15262b;
+  font-size: 34rpx;
   font-weight: 800;
 }
 
-.brand-copy {
-  min-width: 0;
+.login-brand-divider {
+  width: 1rpx;
+  height: 30rpx;
+  margin: 0 16rpx;
+  background: #b8c5c2;
 }
 
-.brand-kicker {
-  color: #216b62;
+.login-brand-product {
+  min-width: 0;
+  color: #52656a;
+  font-size: 24rpx;
+  white-space: nowrap;
+}
+
+.login-intro {
+  position: relative;
+  min-height: 280rpx;
+  margin: 20rpx 0 16rpx;
+  overflow: hidden;
+  border-radius: 8rpx;
+  background: #eef7f5;
+}
+
+.login-intro-art {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.78;
+}
+
+.login-intro-copy {
+  position: relative;
+  z-index: 1;
+  width: 59%;
+  padding: 34rpx 0 30rpx 30rpx;
+}
+
+.login-kicker {
+  color: #167a6e;
   font-size: 24rpx;
   font-weight: 700;
-  margin-bottom: 4rpx;
 }
 
-.notice-panel {
-  padding: 24rpx;
-  margin-bottom: 20rpx;
-  background: #eef7f5;
-  border-color: #c9e6df;
+.login-title {
+  margin-top: 14rpx;
+  color: #15262b;
+  font-size: 46rpx;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
-.notice-title {
-  color: #216b62;
-  font-size: 28rpx;
-  font-weight: 750;
-}
-
-.notice-text {
-  color: #344054;
+.login-subtitle {
+  margin-top: 14rpx;
+  color: #52656a;
   font-size: 24rpx;
   line-height: 1.55;
-  margin: 8rpx 0 12rpx;
 }
 
-.login-panel {
-  padding: 28rpx;
+.emergency-entry {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-height: 92rpx;
+  padding: 16rpx 18rpx;
+  border-left: 5rpx solid #e85a47;
+  border-radius: 0 8rpx 8rpx 0;
+  background: #fff1ee;
 }
 
-.login-footer {
-  margin-top: 28rpx;
+.entry-pressed {
+  background: #fde7e2;
+}
+
+.emergency-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.emergency-title {
+  color: #9e3d33;
+  font-size: 25rpx;
+  font-weight: 800;
+}
+
+.emergency-text {
+  margin-top: 4rpx;
+  color: #815a55;
+  font-size: 23rpx;
+  line-height: 1.4;
+}
+
+.entry-action {
+  color: #c9473d;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.login-form {
+  margin-top: 26rpx;
+  padding: 0 2rpx;
+}
+
+.field + .field {
+  margin-top: 24rpx;
+}
+
+.field-label,
+.password-toggle {
+  color: #26393e;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.password-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.password-toggle {
+  min-height: 60rpx;
+  padding: 12rpx 0 12rpx 24rpx;
+  color: #167a6e;
+  font-size: 24rpx;
+}
+
+.input-shell {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-height: 96rpx;
+  margin-top: 10rpx;
+  padding: 0 22rpx;
+  border: 1rpx solid #d9e2e0;
+  border-radius: 8rpx;
+  background: #ffffff;
+}
+
+.input-shell.has-value {
+  border-color: #98b9b2;
+}
+
+.login-input {
+  min-width: 0;
+  min-height: 94rpx;
+  flex: 1;
+  color: #15262b;
+  font-size: 27rpx;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100% !important;
+  min-height: 96rpx;
+  max-width: none;
+  margin-top: 30rpx;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  border: 0;
+  border-radius: 8rpx;
+  color: #ffffff;
+  background: #167a6e;
+  font-size: 28rpx;
+  font-weight: 800;
+}
+
+.login-button::after {
+  border: 0;
+}
+
+.login-button.disabled {
+  color: #7f8e8b;
+  background: #dfe8e6;
+}
+
+.password-help {
+  margin-top: 16rpx;
+  color: #748388;
+  font-size: 23rpx;
+  line-height: 1.5;
   text-align: center;
 }
 
-.login-tip {
-  color: #667085;
-  font-size: 24rpx;
-  line-height: 1.6;
+.login-footer {
+  margin-top: 30rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #d9e2e0;
+  text-align: center;
 }
 
 .footer-links {
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 12rpx;
-  color: #216b62;
+  gap: 18rpx;
+  color: #3f5157;
   font-size: 24rpx;
-  margin-top: 16rpx;
+  font-weight: 650;
 }
 
-.dot {
-  color: #98a2b3;
+.footer-divider {
+  width: 1rpx;
+  height: 24rpx;
+  background: #c5d0ce;
+}
+
+.footer-link {
+  display: flex;
+  align-items: center;
+  min-height: 64rpx;
+  padding: 0 4rpx;
+}
+
+.privacy-note {
+  max-width: 640rpx;
+  margin: 12rpx auto 0;
+  color: #748388;
+  font-size: 22rpx;
+  line-height: 1.55;
+}
+
+@media (max-width: 360px) {
+  .student-login {
+    padding-right: 24rpx;
+    padding-left: 24rpx;
+  }
+
+  .login-brand-product {
+    font-size: 22rpx;
+  }
+
+  .login-title {
+    font-size: 42rpx;
+  }
 }

@@ -2,6 +2,7 @@ package cn.schoolpsych.appointment.security;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import cn.schoolpsych.appointment.domain.account.Account;
 import cn.schoolpsych.appointment.domain.account.AccountStatus;
@@ -41,17 +42,29 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
         try {
             TokenClaims claims = tokenService.parse(token);
             Account account = accountRepository.findById(claims.accountId()).orElse(null);
-            if (account == null || account.getStatus() != AccountStatus.ACTIVE) {
+            if (account == null
+                    || account.getStatus() != AccountStatus.ACTIVE
+                    || !Objects.equals(claims.username(), account.getUsername())
+                    || claims.role() != account.getRole()
+                    || !Objects.equals(claims.passwordVersion(), account.passwordVersion())) {
                 return;
             }
             AuthenticatedAccount principal = new AuthenticatedAccount(account.getId(), account.getUsername(), account.getRole());
+            String authority = account.isForcePasswordChange() && requiresInitialPasswordChange(account)
+                    ? "ROLE_" + account.getRole().name() + "_PASSWORD_CHANGE_REQUIRED"
+                    : "ROLE_" + account.getRole().name();
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     principal,
                     null,
-                    List.of(new SimpleGrantedAuthority("ROLE_" + account.getRole().name())));
+                    List.of(new SimpleGrantedAuthority(authority)));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (IllegalArgumentException ignored) {
             SecurityContextHolder.clearContext();
         }
+    }
+
+    private boolean requiresInitialPasswordChange(Account account) {
+        return account.getRole() == cn.schoolpsych.appointment.domain.account.AccountRole.STUDENT
+                || account.getRole() == cn.schoolpsych.appointment.domain.account.AccountRole.COUNSELOR;
     }
 }

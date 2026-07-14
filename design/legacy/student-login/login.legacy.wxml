@@ -1,0 +1,45 @@
+<view class="login-page">
+  <view class="login-header">
+    <view class="brand-row">
+      <view class="brand-mark">心</view>
+      <view class="brand-copy">
+        <view class="brand-kicker">本校学生服务</view>
+        <view class="page-title">学校心理预约</view>
+      </view>
+    </view>
+    <view class="page-subtitle">使用学校分配的初始账号和密码登录，预约信息仅用于心理咨询服务。</view>
+  </view>
+
+  <view class="panel notice-panel">
+    <view class="notice-title">需要立即帮助？</view>
+    <view class="notice-text">若当前情况紧急，请直接联系校内值班人员或拨打紧急电话。</view>
+    <view class="inline-link" bindtap="openEmergency">查看紧急求助</view>
+  </view>
+
+  <view class="panel login-panel">
+    <view class="field">
+      <text class="field-label">学号</text>
+      <input class="input" value="{{username}}" placeholder="请输入学号" bindinput="onUsernameInput" />
+    </view>
+
+    <view class="field">
+      <text class="field-label">密码</text>
+      <input class="input" value="{{password}}" password placeholder="请输入密码" bindinput="onPasswordInput" />
+    </view>
+
+    <view class="button-stack">
+      <button class="primary-button" loading="{{loading}}" disabled="{{loading}}" bindtap="submit">登录</button>
+    </view>
+  </view>
+
+  <view class="login-footer">
+    <view class="login-tip">忘记密码请联系学校心理中心或辅导员处理。</view>
+    <view class="footer-links">
+      <text bindtap="openConsent">知情同意</text>
+      <text class="dot">·</text>
+      <text bindtap="openEmergency">紧急求助</text>
+      <text class="dot">·</text>
+      <text bindtap="openCounselorLogin">咨询师入口</text>
+    </view>
+  </view>
+</view>

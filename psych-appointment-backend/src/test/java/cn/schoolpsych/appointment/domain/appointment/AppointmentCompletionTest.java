@@ -10,11 +10,12 @@ class AppointmentCompletionTest {
 
     @Test
     void confirmedAppointmentCanBeCompleted() {
-        Appointment appointment = appointment(AppointmentStatus.CONFIRMED);
+        LocalDateTime now = LocalDateTime.now();
+        Appointment appointment = appointment(AppointmentStatus.CONFIRMED, now.minusHours(1));
 
-        assertThat(appointment.canBeCompletedByCounselor()).isTrue();
+        assertThat(appointment.canBeCompletedByCounselor(now)).isTrue();
 
-        appointment.complete();
+        appointment.complete(now);
 
         assertThat(appointment.getStatus()).isEqualTo(AppointmentStatus.COMPLETED);
         assertThat(appointment.getCompletedAt()).isNotNull();
@@ -22,13 +23,21 @@ class AppointmentCompletionTest {
 
     @Test
     void canceledAppointmentCannotBeCompleted() {
-        Appointment appointment = appointment(AppointmentStatus.CANCELED_BY_STUDENT);
+        LocalDateTime now = LocalDateTime.now();
+        Appointment appointment = appointment(AppointmentStatus.CANCELED_BY_STUDENT, now.minusHours(1));
 
-        assertThat(appointment.canBeCompletedByCounselor()).isFalse();
+        assertThat(appointment.canBeCompletedByCounselor(now)).isFalse();
     }
 
-    private Appointment appointment(AppointmentStatus status) {
-        LocalDateTime startAt = LocalDateTime.now().plusDays(1);
+    @Test
+    void futureAppointmentCannotBeCompleted() {
+        LocalDateTime now = LocalDateTime.now();
+        Appointment appointment = appointment(AppointmentStatus.CONFIRMED, now.plusHours(1));
+
+        assertThat(appointment.canBeCompletedByCounselor(now)).isFalse();
+    }
+
+    private Appointment appointment(AppointmentStatus status, LocalDateTime startAt) {
         return Appointment.create(
                 "APT-test",
                 1L,

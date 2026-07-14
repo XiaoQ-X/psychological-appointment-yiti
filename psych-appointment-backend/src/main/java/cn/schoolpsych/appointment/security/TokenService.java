@@ -47,7 +47,8 @@ public class TokenService {
                 "sub", account.getId(),
                 "username", account.getUsername(),
                 "role", account.getRole().name(),
-                "exp", expiresAt);
+                "exp", expiresAt,
+                "pwd", account.passwordVersion());
         String encodedHeader = encode(header);
         String encodedPayload = encode(payload);
         String signedContent = encodedHeader + "." + encodedPayload;
@@ -78,7 +79,8 @@ public class TokenService {
                     ((Number) payload.get("sub")).longValue(),
                     (String) payload.get("username"),
                     AccountRole.valueOf((String) payload.get("role")),
-                    expiresAt);
+                    expiresAt,
+                    (String) payload.get("pwd"));
         } catch (RuntimeException exception) {
             throw new IllegalArgumentException("Invalid token", exception);
         }

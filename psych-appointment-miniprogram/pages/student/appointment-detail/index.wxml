@@ -1,46 +1,134 @@
-<view class="page">
-  <view wx:if="{{loading}}" class="empty">正在加载详情</view>
+<view class="page appointment-detail-page {{canCancel ? 'with-bottom-action' : ''}}">
+  <view wx:if="{{loading}}" class="state-view">
+    <icon type="waiting" size="36" color="#167a6e" />
+    <view class="state-title">正在加载预约详情</view>
+    <view class="state-desc">请稍候，正在同步最新状态。</view>
+  </view>
 
-  <view wx:else>
-    <view class="panel status-card">
-      <view class="row">
-        <view>
-          <view class="status-label">预约状态</view>
-          <view class="card-title">{{detail.counselorText}}</view>
-          <view class="card-meta">{{detail.timeText}}</view>
+  <view wx:elif="{{loadError}}" class="state-view">
+    <icon type="warn" size="36" color="#e85a47" />
+    <view class="state-title">详情加载失败</view>
+    <view class="state-desc">请检查网络后重新尝试。</view>
+    <button class="retry-button" bindtap="retryLoad">重新加载</button>
+  </view>
+
+  <view wx:else class="detail-content">
+    <view class="detail-hero {{detail.statusClass}}">
+      <image class="detail-art" src="../../../assets/design/breathing-lines.png" mode="aspectFit" aria-hidden="true" />
+      <view class="status-icon">
+        <icon type="{{detail.statusIconType}}" size="38" color="{{detail.statusClass == 'warning' ? '#b7791f' : (detail.isCanceled ? '#748388' : '#167a6e')}}" />
+      </view>
+      <view class="status-copy">
+        <view class="status-title-row">
+          <view class="status-title">{{detail.statusTitle}}</view>
+          <text class="tag status-tag {{detail.tagType}}">{{detail.statusText}}</text>
         </view>
-        <text class="tag {{detail.tagType}}">{{detail.statusText}}</text>
-      </view>
-      <view class="divider"></view>
-      <view class="info-row"><text>预约号</text><text>{{detail.appointmentNo}}</text></view>
-      <view class="info-row"><text>地点</text><text>{{detail.placeText}}</text></view>
-      <view class="info-row"><text>服务类型</text><text>{{detail.serviceTypeText}}</text></view>
-      <view class="info-row"><text>风险等级</text><text>{{detail.riskLevelText}}</text></view>
-    </view>
-
-    <view class="panel section">
-      <view class="section-title">预约信息</view>
-      <view class="info-row"><text>首次咨询</text><text>{{detail.firstVisitText}}</text></view>
-      <view class="info-row"><text>紧急程度</text><text>{{detail.urgencyText}}</text></view>
-      <view class="info-row"><text>方便联系</text><text>{{detail.contactTimeText}}</text></view>
-      <view class="issue-row" wx:if="{{detail.hasIssueTypes}}">
-        <text wx:for="{{detail.issueTypes}}" wx:key="*this" class="chip">{{item}}</text>
+        <view class="status-desc">{{detail.statusDesc}}</view>
       </view>
     </view>
 
-    <view class="panel section" wx:if="{{detail.cancelReason}}">
-      <view class="section-title">取消原因</view>
-      <view class="reason-text">{{detail.cancelReason}}</view>
+    <view class="schedule-panel">
+      <view class="schedule-topline">
+        <view class="schedule-item"><text class="schedule-label">日期</text><text class="schedule-value">{{detail.dateText}} {{detail.monthWeekText}}</text></view>
+        <view class="schedule-item"><text class="schedule-label">时间</text><text class="schedule-value">{{detail.clockText}}</text></view>
+      </view>
+      <view class="counselor-row">
+        <view class="counselor-avatar">{{detail.counselorInitial}}</view>
+        <view class="counselor-copy">
+          <view class="counselor-name-row"><text class="counselor-name">{{detail.counselorText}}</text><text class="verified-badge">校内认证</text></view>
+          <view class="counselor-title">{{detail.counselorTitleText}}</view>
+          <view class="schedule-place">{{detail.placeText}}</view>
+        </view>
+      </view>
     </view>
 
-    <view class="panel section rule-panel">
-      <view class="section-title">取消与到访规则</view>
-      <view class="reason-text">请至少在预约开始前按学校规则取消。若当前情况紧急，请优先联系线下人员。</view>
-      <view class="inline-link emergency-link" bindtap="openEmergency">查看紧急求助</view>
+    <view class="risk-notice" wx:if="{{detail.showRiskNotice}}">
+      <icon type="info" size="22" color="#b7791f" />
+      <view>
+        <view class="notice-title">心理中心正在优先跟进</view>
+        <view class="notice-desc">请保持联系方式畅通；若当前情况紧急，请直接使用紧急求助渠道。</view>
+      </view>
     </view>
 
-    <view class="button-stack" wx:if="{{canCancel}}">
-      <button class="danger-button" loading="{{canceling}}" disabled="{{canceling}}" bindtap="cancelAppointment">取消预约</button>
+    <view class="detail-section">
+      <view class="detail-row appointment-no-row" bindtap="copyAppointmentNo">
+        <text class="detail-label">预约编号</text>
+        <text class="detail-value appointment-no">{{detail.appointmentNo}}</text>
+        <text class="copy-action">复制</text>
+      </view>
+      <view class="detail-row"><text class="detail-label">服务类型</text><text class="detail-value">{{detail.serviceTypeText}}</text></view>
+      <view class="detail-row"><text class="detail-label">首次咨询</text><text class="detail-value">{{detail.firstVisitText}}</text></view>
+      <view class="detail-row"><text class="detail-label">紧急程度</text><text class="detail-value">{{detail.urgencyText}}</text></view>
+      <view class="detail-row"><text class="detail-label">方便联系</text><text class="detail-value">{{detail.contactTimeText}}</text></view>
+      <view class="issue-block" wx:if="{{detail.hasIssueTypes}}">
+        <view class="detail-label">本次希望讨论</view>
+        <view class="issue-row"><text wx:for="{{detail.issueTypes}}" wx:key="*this" class="issue-chip">{{item}}</text></view>
+      </view>
+    </view>
+
+    <view class="cancel-record" wx:if="{{detail.isCanceled}}">
+      <view class="detail-row" wx:if="{{detail.canceledAtText}}"><text class="detail-label">取消时间</text><text class="detail-value">{{detail.canceledAtText}}</text></view>
+      <view class="detail-row" wx:if="{{detail.cancelReason}}"><text class="detail-label">取消原因</text><text class="detail-value">{{detail.cancelReason}}</text></view>
+    </view>
+
+    <view class="rule-section">
+      <view class="rule-heading"><icon type="info" size="22" color="#167a6e" /><view class="section-title">到访与取消</view></view>
+      <view class="rule-text">{{detail.cancellationHint}}</view>
+      <view class="rule-action">查看到访指引</view>
+      <view class="emergency-link" bindtap="openEmergency">查看紧急求助方式</view>
+    </view>
+
+    <view class="post-cancel-actions" wx:if="{{detail.showRebookAction}}">
+      <view class="section-title">接下来</view>
+      <view class="post-cancel-note">你可以重新预约本咨询师，或浏览其他咨询师。</view>
+      <button class="rebook-button" bindtap="rebookCounselor">再次预约{{detail.counselorText}}</button>
+      <button class="other-counselors-button" bindtap="returnToCounselors">浏览其他咨询师</button>
+    </view>
+  </view>
+
+  <view class="bottom-action cancel-bottom" wx:if="{{canCancel}}">
+    <button class="cancel-entry-button" bindtap="openCancelDialog">取消本次预约</button>
+  </view>
+
+  <view class="cancel-mask" wx:if="{{cancelDialogVisible}}" bindtap="closeCancelDialog">
+    <view class="cancel-sheet" catchtap="preventBubble">
+      <view class="sheet-handle"></view>
+      <scroll-view class="cancel-sheet-scroll" scroll-y enhanced>
+        <view class="sheet-kicker">取消预约</view>
+        <view class="sheet-title">确认取消这次预约？</view>
+        <view class="sheet-desc">取消后无法恢复，原时段会重新开放给其他同学。</view>
+
+        <view class="cancel-summary">
+          <view class="cancel-summary-name">{{detail.counselorText}}</view>
+          <view class="cancel-summary-place">{{detail.placeText}}</view>
+          <view class="cancel-summary-time"><text class="cancel-date">{{detail.dateText}}</text><text class="cancel-clock">{{detail.clockText}}</text></view>
+        </view>
+
+        <view class="sheet-deadline" wx:if="{{detail.cancelDeadlineText}}">
+          <icon type="info" size="18" color="#748388" />
+          <text>可在 {{detail.cancelDeadlineText}} 前在线取消</text>
+        </view>
+
+        <view class="reason-heading">请选择取消原因</view>
+        <radio-group class="cancel-reasons" bindchange="selectCancelReason">
+          <label wx:for="{{cancelReasons}}" wx:key="value" class="cancel-reason-option {{item.activeClass}}">
+            <radio value="{{item.value}}" checked="{{item.activeClass == 'active'}}" color="#167a6e" />
+            <text>{{item.label}}</text>
+          </label>
+        </radio-group>
+
+        <view class="cancel-detail-field" wx:if="{{selectedCancelReason == 'OTHER'}}">
+          <view class="field-heading"><text>请填写原因</text><text>{{cancelReasonLength}}/200</text></view>
+          <textarea class="cancel-textarea" value="{{cancelReasonDetail}}" maxlength="200" placeholder="简要说明即可，无需填写隐私信息" bindinput="onCancelReasonInput" />
+        </view>
+
+        <view class="cancel-warning"><icon type="warn" size="20" color="#e85a47" /><text>确认后，本次预约将立即取消且不能撤回。</text></view>
+      </scroll-view>
+
+      <view class="sheet-actions">
+        <button class="keep-button" disabled="{{canceling}}" bindtap="closeCancelDialog">暂不取消</button>
+        <button class="confirm-cancel-button" loading="{{canceling}}" disabled="{{!canConfirmCancel || canceling}}" bindtap="confirmCancellation">确认取消</button>
+      </view>
     </view>
   </view>
 </view>

@@ -1,0 +1,77 @@
+<view class="page consent-page with-bottom-action">
+  <view class="consent-hero">
+    <image
+      class="consent-art"
+      src="../../../assets/design/breathing-lines.png"
+      mode="aspectFit"
+      aria-hidden="true"
+    />
+    <view class="hero-topline">
+      <view class="page-kicker">预约前阅读</view>
+    </view>
+    <view class="page-title">心理咨询知情同意</view>
+    <view class="page-subtitle">在开始预约前，请了解服务如何保护你，以及哪些情况需要启动额外支持。</view>
+    <view class="reading-note" wx:if="{{fromBooking}}">
+      <icon type="info" size="20" color="#7b9476" />
+      <text>{{hasReachedBottom ? '阅读完成，可以确认同意。' : '请继续向下阅读，完成后即可确认。'}}</text>
+    </view>
+  </view>
+
+  <view class="key-section">
+    <view class="section-title">先了解三个重点</view>
+    <view class="key-list">
+      <view wx:for="{{keyPoints}}" wx:key="label" class="key-row">
+        <view class="key-label">{{item.label}}</view>
+        <view class="key-copy">
+          <view class="key-title">{{item.title}}</view>
+          <view class="key-body">{{item.body}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="official-section" wx:if="{{versionInfo.content}}">
+    <view class="official-label">学校发布说明</view>
+    <view class="official-content" user-select>{{versionInfo.content}}</view>
+  </view>
+
+  <view class="detail-section">
+    <view class="section-title">完整说明</view>
+    <view class="consent-list">
+      <view wx:for="{{sections}}" wx:key="title" class="consent-row">
+        <view class="section-number">{{item.number}}</view>
+        <view class="section-copy">
+          <view class="consent-title">{{item.title}}</view>
+          <view class="consent-text">{{item.body}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="emergency-band">
+    <icon type="warn" size="25" color="#d36f62" />
+    <view class="emergency-copy">
+      <view class="emergency-title">当前情况紧急？</view>
+      <view class="emergency-text">请不要等待预约确认，优先联系线下人员或紧急热线。</view>
+      <view class="emergency-link" bindtap="openEmergency">查看紧急求助方式 <text class="link-arrow">›</text></view>
+    </view>
+  </view>
+
+  <view class="version-footer">
+    <view>
+      <view class="version-title">{{versionInfo.title}}</view>
+      <view class="version-meta">{{versionInfo.publishedAtText}}</view>
+    </view>
+    <view wx:if="{{loadingVersion}}" class="version-state">正在同步</view>
+    <view wx:elif="{{versionLoadError}}" class="version-retry" bindtap="retryVersion">重新同步</view>
+    <view wx:else class="version-state active">已同步</view>
+  </view>
+
+  <view class="bottom-action consent-bottom">
+    <button
+      class="primary-button consent-action {{actionDisabled ? 'disabled' : ''}}"
+      disabled="{{actionDisabled}}"
+      bindtap="agreeAndBack"
+    >{{actionText}}</button>
+  </view>
+</view>

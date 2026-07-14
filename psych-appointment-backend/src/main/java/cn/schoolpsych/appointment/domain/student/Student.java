@@ -124,8 +124,20 @@ public class Student extends BaseEntity {
         return bookingRestrictedUntil;
     }
 
-    public boolean canBookNow(LocalDateTime now) {
+    public int getNoShowCount() {
+        return noShowCount;
+    }
+
+    public void recordNoShow() {
+        noShowCount++;
+    }
+
+    public boolean canBookNow(LocalDateTime now, int noShowRestrictThreshold) {
+        if (noShowRestrictThreshold < 1) {
+            throw new IllegalArgumentException("No-show restriction threshold must be positive");
+        }
         return "ACTIVE".equals(status)
+                && noShowCount < noShowRestrictThreshold
                 && (bookingRestrictedUntil == null || !bookingRestrictedUntil.isAfter(now));
     }
 }

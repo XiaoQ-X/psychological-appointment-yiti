@@ -13,14 +13,15 @@ class ReferralTest {
                 2L,
                 3L,
                 ReferralType.HOSPITAL,
-                "City Hospital",
+                new byte[]{4, 5, 6},
                 new byte[]{1});
 
         assertThat(referral.getAppointmentId()).isEqualTo(1L);
         assertThat(referral.getStudentId()).isEqualTo(2L);
         assertThat(referral.getCounselorId()).isEqualTo(3L);
         assertThat(referral.getReferralType()).isEqualTo(ReferralType.HOSPITAL);
-        assertThat(referral.getDestination()).isEqualTo("City Hospital");
+        assertThat(referral.getLegacyDestination()).isNull();
+        assertThat(referral.getDestinationEncrypted()).containsExactly(4, 5, 6);
         assertThat(referral.getStatus()).isEqualTo(ReferralStatus.OPEN);
     }
 }

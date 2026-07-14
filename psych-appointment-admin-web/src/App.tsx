@@ -43,6 +43,7 @@ const defaultRuleSettings: AppointmentRuleSettings = {
   maxWeeklyAppointments: 1,
   maxSemesterCompletedAppointments: 8,
   maxActiveAppointments: 1,
+  noShowRestrictThreshold: 2,
 }
 
 const emptyRuleForm = {
@@ -148,7 +149,7 @@ function App() {
   const activeAppointmentCount = appointments.filter((item) =>
     ['SUBMITTED', 'RISK_REVIEW', 'COUNSELOR_REVIEW', 'ADMIN_REVIEW', 'CONFIRMED', 'CHECKED_IN'].includes(
       item.status,
-    ),
+    ) && Boolean(item.endAt && new Date(item.endAt).getTime() >= Date.now()),
   ).length
 
   async function handleLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -526,10 +527,27 @@ function App() {
   if (!session) {
     return (
       <main className="login-shell">
+        <section className="login-visual" aria-label="心理中心后台介绍">
+          <div className="login-brand">校园节奏</div>
+          <span className="visual-kicker">学校心理咨询预约管理平台</span>
+          <h1>心理预约后台</h1>
+          <p>集中管理学生账号、咨询师排班、预约状态与风险处置。</p>
+          <img className="visual-art" src="/assets/breathing-lines.png" alt="" />
+          <div className="visual-footer">
+            <span>本校专用</span>
+            <span>隐私优先</span>
+            <span>及时响应</span>
+          </div>
+        </section>
         <form className="login-panel" onSubmit={handleLogin}>
-          <div className="brand-mark">管</div>
-          <h1>学校心理预约后台</h1>
-          <p>管理员登录后可导入学生、维护咨询师、生成排班时段并处理高风险预约。</p>
+          <div className="login-form-head">
+            <div>
+              <span className="login-eyebrow">ADMIN WORKSPACE</span>
+              <h2>管理员登录</h2>
+            </div>
+            <span className="role-label">校内专用</span>
+          </div>
+          <p>使用管理端账号进入工作台</p>
           <label>
             账号
             <input
@@ -560,11 +578,11 @@ function App() {
     <main className="app-shell">
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <div className="brand-mark small">心</div>
           <div>
-            <strong>心理预约后台</strong>
-            <span>{session.username}</span>
+            <strong>校园节奏</strong>
+            <span>心理预约后台</span>
           </div>
+          <span className="sidebar-account">{session.username}</span>
         </div>
         <nav className="nav-list">
           {navItems.map((item) => (
@@ -588,7 +606,7 @@ function App() {
         <header className="topbar">
           <div>
             <h1>{navItems.find((item) => item.key === activeView)?.label}</h1>
-            <p>后端：Spring Boot + MySQL + Redis，本页通过真实接口联调。</p>
+            <p>{navItems.find((item) => item.key === activeView)?.hint}</p>
           </div>
           <button className="secondary-button" type="button" onClick={() => void loadAll()}>
             {busy ? '同步中' : '刷新数据'}
@@ -1277,6 +1295,7 @@ function RulesSection({
         <RuleNumberInput label="每周预约上限" value={form.settings.maxWeeklyAppointments} min={1} max={10} onChange={(value) => updateSetting('maxWeeklyAppointments', value)} />
         <RuleNumberInput label="每学期完成上限" value={form.settings.maxSemesterCompletedAppointments} min={1} max={100} onChange={(value) => updateSetting('maxSemesterCompletedAppointments', value)} />
         <RuleNumberInput label="同时有效预约上限" value={form.settings.maxActiveAppointments} min={1} max={5} onChange={(value) => updateSetting('maxActiveAppointments', value)} />
+        <RuleNumberInput label="累计爽约限制阈值" value={form.settings.noShowRestrictThreshold} min={1} max={10} onChange={(value) => updateSetting('noShowRestrictThreshold', value)} />
         <div className="button-row wide">
           <button className="secondary-button" type="submit" disabled={busy}>保存草稿</button>
           <button className="primary-button" type="button" disabled={busy} onClick={onSaveAndActivate}>保存并启用</button>
@@ -1311,7 +1330,7 @@ function RulesSection({
                     </td>
                     <td>
                       <strong>每周 {rule.settings.maxWeeklyAppointments} 次</strong>
-                      <small>有效 {rule.settings.maxActiveAppointments} · 学期完成 {rule.settings.maxSemesterCompletedAppointments}</small>
+                      <small>有效 {rule.settings.maxActiveAppointments} · 学期完成 {rule.settings.maxSemesterCompletedAppointments} · 爽约限制 {rule.settings.noShowRestrictThreshold}</small>
                     </td>
                     <td>{formatDateTime(rule.effectiveFrom)}</td>
                     <td>
@@ -1690,6 +1709,8 @@ const auditActionOptions = [
   'SCHEDULE_UPDATED',
   'SLOTS_GENERATED',
   'APPOINTMENT_CANCELED',
+  'APPOINTMENT_COMPLETED',
+  'APPOINTMENT_MARKED_NO_SHOW',
   'RISK_REVIEWED',
   'APPOINTMENT_RULE_CREATED',
   'APPOINTMENT_RULE_UPDATED',
@@ -1710,6 +1731,8 @@ function auditActionText(action: string) {
     SCHEDULE_UPDATED: '更新排班',
     SLOTS_GENERATED: '生成预约时段',
     APPOINTMENT_CANCELED: '后台取消预约',
+    APPOINTMENT_COMPLETED: '咨询师完成咨询',
+    APPOINTMENT_MARKED_NO_SHOW: '咨询师标记未到访',
     RISK_REVIEWED: '高风险审核',
     APPOINTMENT_RULE_CREATED: '新建预约规则',
     APPOINTMENT_RULE_UPDATED: '更新预约规则',

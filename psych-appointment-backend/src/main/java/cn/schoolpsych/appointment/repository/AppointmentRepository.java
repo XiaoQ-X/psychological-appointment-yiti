@@ -18,6 +18,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     long countByStudentIdAndStatusIn(Long studentId, Collection<AppointmentStatus> statuses);
 
+    long countByStudentIdAndStatusInAndEndAtAfter(
+            Long studentId,
+            Collection<AppointmentStatus> statuses,
+            LocalDateTime endAt);
+
     long countByStudentIdAndStatusInAndStartAtGreaterThanEqualAndStartAtLessThan(
             Long studentId,
             Collection<AppointmentStatus> statuses,

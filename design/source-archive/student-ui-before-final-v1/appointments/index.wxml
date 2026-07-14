@@ -1,0 +1,112 @@
+<view class="page appointments-page">
+  <view class="appointments-head">
+    <view>
+      <view class="page-kicker">预约记录</view>
+      <view class="page-title">我的预约</view>
+      <view class="page-subtitle">查看预约时间、地点、状态，或按规则调整安排。</view>
+    </view>
+    <view class="head-mark">心</view>
+  </view>
+
+  <view class="summary-strip" wx:if="{{!loading}}">
+    <view class="summary-item">
+      <view class="summary-value">{{currentAppointments.length}}</view>
+      <view class="summary-label">当前预约</view>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item">
+      <view class="summary-value history-value">{{historyAppointments.length}}</view>
+      <view class="summary-label">历史记录</view>
+    </view>
+    <view class="summary-note">下拉可刷新</view>
+  </view>
+
+  <scroll-view class="filter-scroll" scroll-x>
+    <view class="filter-row">
+      <view
+        wx:for="{{filters}}"
+        wx:key="value"
+        class="filter-chip {{item.activeClass}}"
+        data-value="{{item.value}}"
+        bindtap="changeFilter"
+      >
+        {{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{loading}}" class="state-view loading-state">
+    <icon type="waiting" size="34" color="#7b9476" />
+    <view class="state-title">正在整理预约记录</view>
+    <view class="state-desc">请稍候</view>
+  </view>
+
+  <view wx:elif="{{appointments.length == 0}}" class="state-view empty-state">
+    <view class="empty-mark"><icon type="info" size="34" color="#7b9476" /></view>
+    <view class="state-title">{{activeStatus ? '当前筛选下没有记录' : '还没有预约记录'}}</view>
+    <view class="state-desc">{{activeStatus ? '可以切换上方状态，查看其他预约。' : '选择一位合适的咨询师，开始第一次预约。'}}</view>
+    <button wx:if="{{!activeStatus}}" class="empty-action" bindtap="startBooking">去选择咨询师</button>
+  </view>
+
+  <view wx:else class="appointment-groups">
+    <view class="appointment-section" wx:if="{{currentAppointments.length}}">
+      <view class="section-head">
+        <view class="section-title">当前预约</view>
+        <view class="section-note">{{currentAppointments.length}} 条</view>
+      </view>
+      <view class="appointment-list current-list">
+        <view
+          wx:for="{{currentAppointments}}"
+          wx:key="appointmentId"
+          class="appointment-row current"
+          data-id="{{item.appointmentId}}"
+          bindtap="openDetail"
+        >
+          <view class="date-block">
+            <view class="date-main">{{item.monthDayText}}</view>
+            <view class="date-week">{{item.weekdayText}}</view>
+          </view>
+          <view class="appointment-main">
+            <view class="appointment-title">{{item.counselorText}}</view>
+            <view class="appointment-time">{{item.clockText}}</view>
+            <view class="appointment-place">{{item.placeText}}</view>
+          </view>
+          <view class="status-side">
+            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+            <text class="row-arrow">›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="appointment-section history-section" wx:if="{{historyAppointments.length}}">
+      <view class="section-head">
+        <view class="section-title">历史记录</view>
+        <view class="section-note">{{historyAppointments.length}} 条</view>
+      </view>
+      <view class="appointment-list history-list">
+        <view
+          wx:for="{{historyAppointments}}"
+          wx:key="appointmentId"
+          class="appointment-row history"
+          data-id="{{item.appointmentId}}"
+          bindtap="openDetail"
+        >
+          <view class="date-block">
+            <view class="date-main">{{item.monthDayText}}</view>
+            <view class="date-week">{{item.weekdayText}}</view>
+          </view>
+          <view class="appointment-main">
+            <view class="appointment-title">{{item.counselorText}}</view>
+            <view class="appointment-time">{{item.clockText}}</view>
+            <view class="appointment-place">{{item.placeText}}</view>
+          </view>
+          <view class="status-side">
+            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+            <text class="row-arrow">›</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,79 @@
+<view class="page with-bottom-action">
+  <view wx:if="{{loading}}" class="empty">正在加载预约</view>
+
+  <view wx:else>
+    <view class="panel summary-card">
+      <view class="row">
+        <view>
+          <view class="status-label">即将完成</view>
+          <view class="card-title">{{detail.studentText}}</view>
+          <view class="card-meta">{{detail.timeText}}</view>
+        </view>
+        <text class="tag {{detail.tagType}}">{{detail.statusText}}</text>
+      </view>
+      <view class="card-meta">{{detail.placeText}}</view>
+    </view>
+
+    <view class="panel section">
+      <view class="section-title">咨询记录</view>
+      <view class="field">
+        <text class="field-label">咨询主题</text>
+        <input
+          class="input"
+          maxlength="500"
+          value="{{topic}}"
+          placeholder="例如：学业压力与睡眠调整"
+          bindinput="onTopicInput"
+        />
+      </view>
+
+      <view class="field">
+        <text class="field-label">记录摘要</text>
+        <textarea
+          class="textarea note-textarea"
+          maxlength="10000"
+          value="{{summary}}"
+          placeholder="记录咨询过程、主要问题、干预方向和学生反馈。"
+          bindinput="onSummaryInput"
+        />
+      </view>
+
+      <view class="field">
+        <text class="field-label">风险变化</text>
+        <picker mode="selector" range="{{riskOptions}}" range-key="label" value="{{riskChangeIndex}}" bindchange="onRiskChange">
+          <view class="select-row">{{selectedRiskLabel}}</view>
+        </picker>
+      </view>
+
+      <view class="field">
+        <text class="field-label">后续计划</text>
+        <textarea
+          class="textarea plan-textarea"
+          maxlength="10000"
+          value="{{followUpPlan}}"
+          placeholder="可填写复访建议、转介建议、学生自助任务等。"
+          bindinput="onFollowUpPlanInput"
+        />
+      </view>
+
+      <view class="switch-row">
+        <view>
+          <view class="switch-title">需要转介</view>
+          <view class="switch-note">开启后后台可继续跟进转介流程。</view>
+        </view>
+        <switch checked="{{needReferral}}" color="#216b62" bindchange="onNeedReferralChange" />
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-action">
+    <button
+      class="primary-button"
+      loading="{{submitting}}"
+      disabled="{{submitDisabled}}"
+      bindtap="submit"
+    >
+      提交并完成咨询
+    </button>
+  </view>
+</view>

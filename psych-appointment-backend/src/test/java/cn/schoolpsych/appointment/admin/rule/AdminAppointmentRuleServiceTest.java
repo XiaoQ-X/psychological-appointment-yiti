@@ -47,7 +47,7 @@ class AdminAppointmentRuleServiceTest {
     void createPersistsCompleteDraftAndAuditsIt() throws Exception {
         AppointmentRuleRequest request = new AppointmentRuleRequest(
                 "New rules",
-                new AppointmentRuleSettings(15, 8, 21, 12, 18, 2, 10, 2));
+                new AppointmentRuleSettings(15, 8, 21, 12, 18, 2, 10, 2, 3));
         when(ruleSetRepository.save(any(AppointmentRuleSet.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -59,6 +59,8 @@ class AdminAppointmentRuleServiceTest {
         assertThat(response.settings()).isEqualTo(request.settings());
         assertThat(objectMapper.readTree(captor.getValue().getSettingsJson()).path("slotLockMinutes").asInt())
                 .isEqualTo(8);
+        assertThat(objectMapper.readTree(captor.getValue().getSettingsJson()).path("noShowRestrictThreshold").asInt())
+                .isEqualTo(3);
         verify(auditLogService).record(
                 eq(actor()),
                 eq(AuditActions.APPOINTMENT_RULE_CREATED),
@@ -94,10 +96,33 @@ class AdminAppointmentRuleServiceTest {
     }
 
     @Test
+    void legacyRuleWithoutNoShowThresholdUsesTheDocumentedDefault() {
+        AppointmentRuleSet legacy = ruleSet(3L, "Legacy");
+        when(ruleSetRepository.findAllByOrderByCreatedAtDesc()).thenReturn(List.of(legacy));
+
+        AppointmentRuleResponse response = service.list().get(0);
+
+        assertThat(response.settings().noShowRestrictThreshold()).isEqualTo(2);
+    }
+
+    @Test
+    void legacyRequestWithoutNoShowThresholdIsNormalizedToDefault() throws Exception {
+        AppointmentRuleRequest request = new AppointmentRuleRequest(
+                "Legacy client rules",
+                new AppointmentRuleSettings(10, 10, 14, 24, 24, 1, 8, 1, null));
+        when(ruleSetRepository.save(any(AppointmentRuleSet.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        AppointmentRuleResponse response = service.create(request, actor(), metadata());
+
+        assertThat(response.settings().noShowRestrictThreshold()).isEqualTo(2);
+    }
+
+    @Test
     void createRejectsLeadTimeOutsideBookingWindow() {
         AppointmentRuleRequest request = new AppointmentRuleRequest(
                 "Invalid rules",
-                new AppointmentRuleSettings(10, 10, 1, 25, 24, 1, 8, 1));
+                new AppointmentRuleSettings(10, 10, 1, 25, 24, 1, 8, 1, 2));
 
         assertThatThrownBy(() -> service.create(request, actor(), metadata()))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -12,6 +12,7 @@ import cn.schoolpsych.appointment.domain.audit.SensitiveLevel;
 import cn.schoolpsych.appointment.repository.AccountRepository;
 import cn.schoolpsych.appointment.security.TokenClaims;
 import cn.schoolpsych.appointment.security.TokenService;
+import cn.schoolpsych.appointment.security.AccountLoginAttemptService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,23 +21,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AdminAuthService {
 
-    private static final int MAX_LOGIN_FAILURES = 5;
-    private static final int LOCK_MINUTES = 15;
-
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final AuditLogService auditLogService;
+    private final AccountLoginAttemptService loginAttemptService;
 
     public AdminAuthService(
             AccountRepository accountRepository,
             PasswordEncoder passwordEncoder,
             TokenService tokenService,
-            AuditLogService auditLogService) {
+            AuditLogService auditLogService,
+            AccountLoginAttemptService loginAttemptService) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
         this.auditLogService = auditLogService;
+        this.loginAttemptService = loginAttemptService;
     }
 
     @Transactional
@@ -48,7 +49,7 @@ public class AdminAuthService {
             throw new BadCredentialsException("Invalid username or password");
         }
         if (!passwordEncoder.matches(request.password(), account.getPasswordHash())) {
-            account.markLoginFailed(MAX_LOGIN_FAILURES, LOCK_MINUTES);
+            loginAttemptService.recordFailure(account.getId());
             throw new BadCredentialsException("Invalid username or password");
         }
         account.markLoginSuccess();

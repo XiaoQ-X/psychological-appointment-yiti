@@ -1,0 +1,82 @@
+<view class="password-page">
+  <view class="brand-bar">
+    <view class="brand-lockup">
+      <text class="brand-name">校园节奏</text>
+      <view class="brand-divider"></view>
+      <text class="brand-product">账号安全</text>
+    </view>
+    <text class="role-mark">{{roleName}}账号</text>
+  </view>
+
+  <view class="security-intro">
+    <view class="intro-kicker">首次登录安全验证</view>
+    <view class="intro-title">请设置新密码</view>
+    <view class="intro-copy">初始密码仅用于首次登录。完成修改后，才可进入预约服务。</view>
+    <image class="intro-art" src="/assets/design/breathing-lines.png" mode="aspectFit" aria-hidden="true" />
+  </view>
+
+  <view class="password-form">
+    <view class="field">
+      <view class="field-head">
+        <text class="field-label">当前密码</text>
+        <text class="visibility" bindtap="toggleCurrentVisibility">{{currentVisible ? '隐藏' : '显示'}}</text>
+      </view>
+      <input
+        class="password-input"
+        value="{{currentPassword}}"
+        password="{{!currentVisible}}"
+        placeholder="请输入初始密码"
+        maxlength="128"
+        bindinput="onCurrentInput"
+      />
+    </view>
+
+    <view class="field">
+      <view class="field-head">
+        <text class="field-label">新密码</text>
+        <text class="visibility" bindtap="toggleNewVisibility">{{newVisible ? '隐藏' : '显示'}}</text>
+      </view>
+      <input
+        class="password-input"
+        value="{{newPassword}}"
+        password="{{!newVisible}}"
+        placeholder="至少 8 位，且不要与初始密码相同"
+        maxlength="128"
+        bindinput="onNewInput"
+      />
+    </view>
+
+    <view class="field">
+      <view class="field-head">
+        <text class="field-label">确认新密码</text>
+        <text class="visibility" bindtap="toggleConfirmVisibility">{{confirmVisible ? '隐藏' : '显示'}}</text>
+      </view>
+      <input
+        class="password-input {{confirmPassword && confirmPassword !== newPassword ? 'input-error' : ''}}"
+        value="{{confirmPassword}}"
+        password="{{!confirmVisible}}"
+        placeholder="请再次输入新密码"
+        maxlength="128"
+        confirm-type="done"
+        bindinput="onConfirmInput"
+        bindconfirm="submit"
+      />
+      <text wx:if="{{confirmPassword && confirmPassword !== newPassword}}" class="field-error">两次输入的密码不一致</text>
+    </view>
+
+    <view class="security-note">
+      <view class="note-title">密码建议</view>
+      <view class="note-row">使用字母、数字和符号组合，避免使用学号、生日或连续数字。</view>
+    </view>
+
+    <button
+      class="submit-button {{!canSubmit || loading ? 'disabled' : ''}}"
+      loading="{{loading}}"
+      disabled="{{!canSubmit || loading}}"
+      bindtap="submit"
+    >保存并继续</button>
+    <button class="switch-button" disabled="{{loading}}" bindtap="switchAccount">退出并更换账号</button>
+  </view>
+
+  <view class="support-note">无法验证初始密码时，请联系学校心理中心管理员重置。</view>
+</view>

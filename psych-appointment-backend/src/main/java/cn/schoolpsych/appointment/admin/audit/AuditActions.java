@@ -14,6 +14,8 @@ public final class AuditActions {
     public static final String SCHEDULE_UPDATED = "SCHEDULE_UPDATED";
     public static final String SLOTS_GENERATED = "SLOTS_GENERATED";
     public static final String APPOINTMENT_CANCELED = "APPOINTMENT_CANCELED";
+    public static final String APPOINTMENT_COMPLETED = "APPOINTMENT_COMPLETED";
+    public static final String APPOINTMENT_MARKED_NO_SHOW = "APPOINTMENT_MARKED_NO_SHOW";
     public static final String RISK_REVIEWED = "RISK_REVIEWED";
     public static final String APPOINTMENT_RULE_CREATED = "APPOINTMENT_RULE_CREATED";
     public static final String APPOINTMENT_RULE_UPDATED = "APPOINTMENT_RULE_UPDATED";

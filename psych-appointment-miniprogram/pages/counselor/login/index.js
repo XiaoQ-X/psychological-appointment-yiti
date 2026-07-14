@@ -9,6 +9,10 @@ Page({
   },
 
   onLoad() {
+    if (auth.getToken() && auth.requiresPasswordChange()) {
+      auth.openPasswordChange();
+      return;
+    }
     if (auth.getToken() && auth.getRole() === 'COUNSELOR') {
       wx.redirectTo({ url: '/pages/counselor/appointments/index' });
       return;
@@ -44,6 +48,10 @@ Page({
       .then((data) => {
         auth.setCounselorSession(data);
         getApp().globalData.counselor = auth.getCounselor();
+        if (data.forcePasswordChange) {
+          wx.redirectTo({ url: '/pages/password-change/index' });
+          return;
+        }
         wx.redirectTo({ url: '/pages/counselor/appointments/index' });
       })
       .finally(() => {

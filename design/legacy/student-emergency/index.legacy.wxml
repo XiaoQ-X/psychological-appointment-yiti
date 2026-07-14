@@ -1,0 +1,24 @@
+<view class="page">
+  <view class="panel emergency-hero">
+    <view class="page-title">紧急求助</view>
+    <view class="emergency-copy">若当前情况非常紧急，请立即联系线下人员或拨打紧急电话。线上预约不能替代即时危机处理。</view>
+  </view>
+
+  <view class="section card-list">
+    <view wx:for="{{contacts}}" wx:key="title" class="card contact-card">
+      <view class="row">
+        <view>
+          <view class="card-title">{{item.title}}</view>
+          <view class="card-meta">{{item.desc}}</view>
+        </view>
+        <button class="call-button" data-phone="{{item.phone}}" bindtap="callPhone">拨打</button>
+      </view>
+      <view class="phone-text">{{item.phone}}</view>
+    </view>
+  </view>
+
+  <view class="panel section note-panel">
+    <view class="section-title">提示</view>
+    <view class="emergency-copy">如果你已经提交预约并进入待审核状态，心理中心会优先处理。等待期间如情况变化，请优先使用本页联系方式。</view>
+  </view>
+</view>

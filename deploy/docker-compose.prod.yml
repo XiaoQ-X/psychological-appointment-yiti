@@ -1,0 +1,86 @@
+name: psych-appointment
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?required}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-psych_appointment}
+      MYSQL_USER: ${MYSQL_USER:-psych_app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?required}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  redis:
+    image: redis:7.4-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?required}
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:?required}"]
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASSWORD --no-auth-warning ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [internal]
+
+  backend:
+    build:
+      context: ../psych-appointment-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8080
+      DB_URL: ${DB_URL:?required}
+      DB_USERNAME: ${DB_USERNAME:?required}
+      DB_PASSWORD: ${DB_PASSWORD:?required}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?required}
+      TOKEN_SECRET: ${TOKEN_SECRET:?required}
+      SENSITIVE_DATA_KEY_BASE64: ${SENSITIVE_DATA_KEY_BASE64:?required}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?required}
+      UPLOAD_TEMP_DIR: /tmp/psych-appointment/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [internal]
+
+  admin-web:
+    build:
+      context: ../psych-appointment-admin-web
+    restart: unless-stopped
+    ports:
+      - "${PUBLIC_BIND:-127.0.0.1}:${PUBLIC_PORT:-8088}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks: [internal]
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:

@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/login/login",
+    "pages/password-change/index",
     "pages/student/counselors/index",
     "pages/student/counselor-detail/index",
     "pages/student/booking-form/index",

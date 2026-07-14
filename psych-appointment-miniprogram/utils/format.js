@@ -25,7 +25,16 @@ function formatDateTime(value) {
 }
 
 function formatTimeRange(startAt, endAt) {
-  return `${formatDateTime(startAt)} - ${formatDateTime(endAt).slice(11)}`;
+  const start = parseDateTime(startAt);
+  const end = parseDateTime(endAt);
+  if (Number.isNaN(start.getTime())) {
+    return '';
+  }
+  const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+  const endText = Number.isNaN(end.getTime())
+    ? ''
+    : ` - ${pad(end.getHours())}:${pad(end.getMinutes())}`;
+  return `${start.getFullYear()}年${start.getMonth() + 1}月${start.getDate()}日 ${weekdays[start.getDay()]} ${pad(start.getHours())}:${pad(start.getMinutes())}${endText}`;
 }
 
 function parseDateTime(value) {
@@ -102,13 +111,47 @@ function riskLevelText(value) {
   return map[value] || value || '-';
 }
 
+function displayText(value, fallback = '-') {
+  const text = value == null ? '' : `${value}`.trim();
+  return !text || /^\?+$/.test(text) ? fallback : text;
+}
+
+function issueTypeText(value) {
+  const map = {
+    'academic-stress': '学业压力',
+    'study-pressure': '学业压力',
+    emotion: '情绪困扰',
+    relationship: '人际关系',
+    family: '家庭议题',
+    sleep: '睡眠问题',
+    career: '生涯发展'
+  };
+  return displayText(map[value] || value, '其他困扰');
+}
+
+function contactTimeText(value) {
+  const map = {
+    'weekday afternoon': '工作日下午',
+    'weekday-afternoon': '工作日下午',
+    'workday-afternoon': '工作日下午',
+    'weekday morning': '工作日上午',
+    'weekday-morning': '工作日上午',
+    evening: '傍晚或晚间'
+  };
+  return displayText(map[value] || value, '未填写');
+}
+
 module.exports = {
   addDays,
   toDateString,
   formatDateTime,
   formatTimeRange,
+  parseDateTime,
   statusText,
   statusTagType,
   urgencyText,
-  riskLevelText
+  riskLevelText,
+  displayText,
+  issueTypeText,
+  contactTimeText
 };

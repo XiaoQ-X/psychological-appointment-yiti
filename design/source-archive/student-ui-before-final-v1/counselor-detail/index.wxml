@@ -1,0 +1,78 @@
+<view class="page with-bottom-action detail-page">
+  <view wx:if="{{loading}}" class="empty">正在加载详情</view>
+
+  <view wx:else>
+    <view class="detail-head">
+      <view class="detail-kicker">咨询师信息</view>
+      <view class="profile-identity">
+        <image wx:if="{{counselor.avatarUrl}}" class="detail-avatar" src="{{counselor.avatarUrl}}" mode="aspectFill" />
+        <view wx:else class="detail-avatar detail-avatar-fallback">校</view>
+        <view class="identity-copy">
+          <view class="page-title">{{counselor.name}}</view>
+          <view class="page-subtitle">{{counselor.titleText}} · {{counselor.campusText}}</view>
+          <view class="verified-line"><text class="verified-badge">校内认证</text><text>信息由心理中心维护</text></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="panel profile-panel">
+      <view class="profile-stats">
+        <view class="stat-block">
+          <text class="stat-number">{{counselor.slotCount}}</text>
+          <text class="stat-label">个可约时段</text>
+        </view>
+        <text class="tag">校内心理服务</text>
+      </view>
+
+      <view class="expertise-row" wx:if="{{counselor.hasExpertise}}">
+        <text wx:for="{{counselor.expertise}}" wx:key="*this" class="chip">{{item}}</text>
+      </view>
+
+      <view class="divider"></view>
+      <view class="section-label">咨询师简介</view>
+      <view class="profile-text">{{counselor.introText}}</view>
+      <view class="section-label training-label" wx:if="{{counselor.trainingBackground}}">受训背景</view>
+      <view class="profile-text muted" wx:if="{{counselor.trainingBackground}}">
+        {{counselor.trainingBackground}}
+      </view>
+    </view>
+
+    <view class="section slot-section">
+      <view class="section-head">
+        <view>
+          <view class="section-title">选择一个时段</view>
+          <view class="section-note">显示未来两周可预约时间，选择后填写预约信息。</view>
+        </view>
+      </view>
+
+      <view wx:if="{{selectedSlotId}}" class="selection-note">
+        已选择一个可预约时段，请继续填写预约信息
+      </view>
+
+      <view wx:if="{{slots.length == 0}}" class="empty small-empty">暂无可预约时段</view>
+      <view wx:else class="slot-groups">
+        <view wx:for="{{slotGroups}}" wx:key="dateKey" class="slot-group">
+          <view class="date-title">{{item.dateText}}</view>
+          <view class="slot-grid">
+            <view
+              wx:for="{{item.slots}}"
+              wx:for-item="slot"
+              wx:key="id"
+              class="slot-card {{slot.selectedClass}}"
+              data-id="{{slot.id}}"
+              bindtap="selectSlot"
+            >
+              <view class="slot-time">{{slot.timeOnlyText}}</view>
+              <view class="slot-place">{{slot.placeText}}</view>
+              <view class="slot-mode">{{slot.modeText}}</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="bottom-action">
+      <button class="primary-button" disabled="{{!selectedSlotId}}" bindtap="goBooking">填写预约信息</button>
+    </view>
+  </view>
+</view>

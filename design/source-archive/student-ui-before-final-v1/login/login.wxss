@@ -1,0 +1,264 @@
+page {
+  background: #f8f7f1;
+}
+
+.login-page {
+  min-height: 100vh;
+  padding: 34rpx 30rpx 50rpx;
+  background: #f8f7f1;
+  color: #1f2a2d;
+}
+
+.login-header {
+  position: relative;
+  min-height: 330rpx;
+  overflow: hidden;
+  padding: 4rpx 2rpx 18rpx;
+}
+
+.brand-line {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.brand-name {
+  color: #1f2a2d;
+  font-size: 31rpx;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.brand-divider {
+  width: 1rpx;
+  height: 30rpx;
+  margin: 0 15rpx;
+  background: #aeb8ae;
+}
+
+.brand-motto {
+  color: #6d7770;
+  font-size: 23rpx;
+  white-space: nowrap;
+}
+
+.brand-kicker {
+  position: relative;
+  z-index: 1;
+  margin-top: 58rpx;
+  color: #7b9476;
+  font-size: 23rpx;
+  font-weight: 700;
+}
+
+.login-header .page-title {
+  position: relative;
+  z-index: 1;
+  margin: 8rpx 0 0;
+  color: #1f2a2d;
+  font-size: 50rpx;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.login-header .page-subtitle {
+  position: relative;
+  z-index: 1;
+  margin-top: 12rpx;
+  color: #6d7770;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.login-art {
+  position: absolute;
+  right: -88rpx;
+  bottom: -16rpx;
+  width: 760rpx;
+  height: 205rpx;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.emergency-entry {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  min-height: 90rpx;
+  padding: 16rpx 18rpx;
+  border-left: 5rpx solid #d36f62;
+  background: #fff4f1;
+}
+
+.emergency-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.emergency-title {
+  color: #6f342f;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.emergency-text {
+  margin-top: 4rpx;
+  color: #7d5a55;
+  font-size: 23rpx;
+  line-height: 1.4;
+}
+
+.entry-arrow {
+  color: #b65349;
+  font-size: 36rpx;
+  line-height: 1;
+}
+
+.login-panel {
+  margin-top: 22rpx;
+  padding: 26rpx 24rpx 24rpx;
+  border: 1rpx solid #d8ded7;
+  border-radius: 12rpx;
+  background: #fefdf9;
+  box-shadow: 0 8rpx 26rpx rgba(53, 69, 57, 0.045);
+}
+
+.form-title {
+  color: #1f2a2d;
+  font-size: 31rpx;
+  font-weight: 800;
+}
+
+.form-note {
+  margin-top: 7rpx;
+  color: #6d7770;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.field {
+  margin-top: 24rpx;
+}
+
+.field-label,
+.password-toggle {
+  color: #4f5b53;
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.password-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.password-toggle {
+  color: #7b9476;
+  min-height: 64rpx;
+  padding: 14rpx 0 14rpx 24rpx;
+  font-size: 24rpx;
+}
+
+.input-shell {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-height: 82rpx;
+  margin-top: 10rpx;
+  padding: 0 18rpx;
+  border: 1rpx solid #d8ded7;
+  border-radius: 9rpx;
+  background: #ffffff;
+}
+
+.login-input {
+  min-width: 0;
+  min-height: 80rpx;
+  flex: 1;
+  color: #1f2a2d;
+  font-size: 26rpx;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 84rpx;
+  margin: 30rpx 0 0;
+  border: 0;
+  border-radius: 10rpx;
+  color: #ffffff;
+  background: #7b9476;
+  font-size: 27rpx;
+  font-weight: 800;
+}
+
+.login-button::after {
+  border: 0;
+}
+
+.login-button.disabled {
+  color: #8f9891;
+  background: #e1e5df;
+}
+
+.password-help {
+  margin-top: 16rpx;
+  color: #8a948c;
+  font-size: 23rpx;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.login-footer {
+  margin-top: 26rpx;
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18rpx;
+  color: #61785d;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.footer-divider {
+  width: 1rpx;
+  height: 24rpx;
+  background: #c8cec8;
+}
+
+.footer-link {
+  display: flex;
+  align-items: center;
+  min-height: 72rpx;
+  padding: 0 8rpx;
+  border-bottom: 1rpx solid #9eb4a3;
+}
+
+.privacy-note {
+  max-width: 610rpx;
+  margin: 15rpx auto 0;
+  color: #7a847d;
+  font-size: 22rpx;
+  line-height: 1.55;
+}
+
+@media (max-width: 360px) {
+  .brand-motto {
+    display: none;
+  }
+
+  .login-page {
+    padding-right: 24rpx;
+    padding-left: 24rpx;
+  }
+}

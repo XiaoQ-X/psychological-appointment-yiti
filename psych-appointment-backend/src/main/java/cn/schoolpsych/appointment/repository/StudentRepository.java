@@ -18,5 +18,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("select student from Student student where student.accountId = :accountId")
     Optional<Student> findByAccountIdForUpdate(@Param("accountId") Long accountId);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select student from Student student where student.id = :id")
+    Optional<Student> findByIdForUpdate(@Param("id") Long id);
+
     boolean existsByStudentNo(String studentNo);
 }

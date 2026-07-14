@@ -1,46 +1,67 @@
-<view class="page">
-  <view wx:if="{{loading}}" class="empty">正在加载详情</view>
+<view class="detail-page {{canComplete ? 'with-actions' : ''}}">
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-title">正在加载预约详情</view>
+    <view class="empty-text">请稍候，正在同步最新状态。</view>
+  </view>
 
   <view wx:else>
-    <view class="panel status-card">
-      <view class="row">
+    <view class="status-band">
+      <view class="status-head">
         <view>
-          <view class="status-label">预约状态</view>
-          <view class="card-title">{{detail.studentText}}</view>
-          <view class="card-meta">{{detail.timeText}}</view>
+          <view class="status-kicker">预约状态</view>
+          <view class="student-name">{{detail.studentText}}</view>
         </view>
-        <text class="tag {{detail.tagType}}">{{detail.statusText}}</text>
+        <text class="status-tag {{detail.tagType}}">{{detail.statusText}}</text>
       </view>
-      <view class="divider"></view>
-      <view class="info-row"><text>预约号</text><text>{{detail.appointmentNo}}</text></view>
-      <view class="info-row"><text>地点</text><text>{{detail.placeText}}</text></view>
-      <view class="info-row"><text>服务类型</text><text>{{detail.serviceTypeText}}</text></view>
-      <view class="info-row"><text>风险等级</text><text class="tag {{detail.riskTagType}}">{{detail.riskLevelText}}</text></view>
+      <view class="appointment-time">{{detail.timeText}}</view>
+      <view class="appointment-place">{{detail.placeText}} · {{detail.serviceTypeText}}</view>
     </view>
 
-    <view class="panel section">
-      <view class="section-title">学生信息</view>
-      <view class="info-row"><text>学号</text><text>{{detail.studentNoText}}</text></view>
-      <view class="info-row"><text>学生画像</text><text>{{detail.studentProfileText}}</text></view>
+    <view class="detail-section">
+      <view class="section-heading">
+        <view class="section-title">预约信息</view>
+        <text class="risk-tag {{detail.riskTagType}}">{{detail.riskLevelText}}</text>
+      </view>
+      <view class="info-list">
+        <view class="info-row"><text class="info-label">预约编号</text><text class="info-value number-value">{{detail.appointmentNo}}</text></view>
+        <view class="info-row"><text class="info-label">咨询地点</text><text class="info-value">{{detail.placeText}}</text></view>
+        <view class="info-row"><text class="info-label">服务类型</text><text class="info-value">{{detail.serviceTypeText}}</text></view>
+      </view>
     </view>
 
-    <view class="panel section">
-      <view class="section-title">预约表单</view>
-      <view class="info-row"><text>首次咨询</text><text>{{detail.firstVisitText}}</text></view>
-      <view class="info-row"><text>紧急程度</text><text>{{detail.urgencyText}}</text></view>
-      <view class="info-row"><text>方便联系</text><text>{{detail.contactTimeText}}</text></view>
+    <view class="detail-section">
+      <view class="section-heading">
+        <view class="section-title">学生信息</view>
+        <view class="privacy-mark">仅用于本次咨询</view>
+      </view>
+      <view class="info-list">
+        <view class="info-row"><text class="info-label">学号</text><text class="info-value">{{detail.studentNoText}}</text></view>
+        <view class="info-row profile-row"><text class="info-label">基本信息</text><text class="info-value">{{detail.studentProfileText}}</text></view>
+      </view>
+    </view>
+
+    <view class="detail-section">
+      <view class="section-heading">
+        <view class="section-title">预约表单</view>
+      </view>
+      <view class="info-list">
+        <view class="info-row"><text class="info-label">首次咨询</text><text class="info-value">{{detail.firstVisitText}}</text></view>
+        <view class="info-row"><text class="info-label">紧急程度</text><text class="info-value">{{detail.urgencyText}}</text></view>
+        <view class="info-row"><text class="info-label">方便联系</text><text class="info-value">{{detail.contactTimeText}}</text></view>
+      </view>
       <view class="issue-row" wx:if="{{detail.hasIssueTypes}}">
-        <text wx:for="{{detail.issueTypes}}" wx:key="*this" class="chip">{{item}}</text>
+        <text wx:for="{{detail.issueTypes}}" wx:key="*this" class="issue-tag">{{item}}</text>
       </view>
     </view>
 
-    <view class="panel section" wx:if="{{detail.cancelReason}}">
+    <view class="detail-section cancel-section" wx:if="{{detail.cancelReason}}">
       <view class="section-title">取消原因</view>
       <view class="reason-text">{{detail.cancelReason}}</view>
     </view>
+  </view>
 
-    <view class="button-stack" wx:if="{{canComplete}}">
-      <button class="primary-button" bindtap="openCompleteForm">完成咨询并填写记录</button>
-    </view>
+  <view class="bottom-actions" wx:if="{{canComplete}}">
+    <button class="primary-action" bindtap="openCompleteForm">填写咨询记录</button>
+    <button wx:if="{{canMarkNoShow}}" class="no-show-action" loading="{{markingNoShow}}" disabled="{{markingNoShow}}" bindtap="markNoShow">标记未到访</button>
   </view>
 </view>

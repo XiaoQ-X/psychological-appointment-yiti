@@ -7,11 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import cn.schoolpsych.appointment.domain.appointment.Appointment;
 import cn.schoolpsych.appointment.domain.appointment.AppointmentForm;
+import cn.schoolpsych.appointment.domain.appointment.AppointmentFormMetadata;
 import cn.schoolpsych.appointment.domain.appointment.AppointmentStatus;
 import cn.schoolpsych.appointment.domain.common.BaseEntity;
 import cn.schoolpsych.appointment.domain.counselor.Counselor;
@@ -27,6 +25,7 @@ import cn.schoolpsych.appointment.repository.RoomRepository;
 import cn.schoolpsych.appointment.repository.ServiceTypeRepository;
 import cn.schoolpsych.appointment.repository.StudentRepository;
 import cn.schoolpsych.appointment.security.AuthenticatedAccount;
+import cn.schoolpsych.appointment.security.AppointmentSensitiveDataService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +39,8 @@ public class StudentAppointmentQueryService {
     private final CampusRepository campusRepository;
     private final RoomRepository roomRepository;
     private final ServiceTypeRepository serviceTypeRepository;
-    private final ObjectMapper objectMapper;
+    private final AppointmentSensitiveDataService sensitiveData;
+    private final StudentCancellationPolicy cancellationPolicy;
 
     public StudentAppointmentQueryService(
             StudentRepository studentRepository,
@@ -50,7 +50,8 @@ public class StudentAppointmentQueryService {
             CampusRepository campusRepository,
             RoomRepository roomRepository,
             ServiceTypeRepository serviceTypeRepository,
-            ObjectMapper objectMapper) {
+            AppointmentSensitiveDataService sensitiveData,
+            StudentCancellationPolicy cancellationPolicy) {
         this.studentRepository = studentRepository;
         this.appointmentRepository = appointmentRepository;
         this.formRepository = formRepository;
@@ -58,7 +59,8 @@ public class StudentAppointmentQueryService {
         this.campusRepository = campusRepository;
         this.roomRepository = roomRepository;
         this.serviceTypeRepository = serviceTypeRepository;
-        this.objectMapper = objectMapper;
+        this.sensitiveData = sensitiveData;
+        this.cancellationPolicy = cancellationPolicy;
     }
 
     @Transactional(readOnly = true)
@@ -93,6 +95,9 @@ public class StudentAppointmentQueryService {
         Campus campus = relatedData.campuses().get(appointment.getCampusId());
         Room room = appointment.getRoomId() == null ? null : relatedData.rooms().get(appointment.getRoomId());
         ServiceType serviceType = relatedData.serviceTypes().get(appointment.getServiceTypeId());
+        StudentCancellationPolicy.CancellationAvailability cancellation =
+                cancellationPolicy.evaluate(appointment, LocalDateTime.now());
+        AppointmentFormMetadata formMetadata = sensitiveData.readFormMetadata(form);
         return new StudentAppointmentDetailResponse(
                 appointment.getId(),
                 appointment.getAppointmentNo(),
@@ -110,11 +115,14 @@ public class StudentAppointmentQueryService {
                 appointment.getStartAt(),
                 appointment.getEndAt(),
                 form != null && form.isFirstVisit(),
-                form == null ? List.of() : readJsonList(form.getIssueTypesJson()),
-                form == null ? null : form.getUrgencyLevel(),
-                form == null ? null : form.getContactTime(),
-                appointment.getCancelReason(),
-                appointment.getCanceledAt());
+                formMetadata.issueTypes(),
+                formMetadata.urgencyLevel(),
+                formMetadata.contactTime(),
+                sensitiveData.readCancellationReason(appointment),
+                appointment.getCanceledAt(),
+                cancellation.canCancel(),
+                cancellation.minCancelHoursAhead(),
+                cancellation.cancelDeadline());
     }
 
     private StudentAppointmentRecordResponse toRecord(Appointment appointment, RelatedData relatedData) {
@@ -138,7 +146,7 @@ public class StudentAppointmentQueryService {
                 serviceType == null ? null : serviceType.getName(),
                 appointment.getStartAt(),
                 appointment.getEndAt(),
-                appointment.getCancelReason(),
+                sensitiveData.readCancellationReason(appointment),
                 appointment.getCanceledAt());
     }
 
@@ -173,18 +181,6 @@ public class StudentAppointmentQueryService {
             throw new IllegalArgumentException("to must not be before from");
         }
         return new DateRange(fromAt, toAt);
-    }
-
-    private List<String> readJsonList(String json) {
-        if (json == null || json.isBlank()) {
-            return List.of();
-        }
-        try {
-            return objectMapper.readValue(json, new TypeReference<>() {
-            });
-        } catch (JsonProcessingException exception) {
-            return List.of();
-        }
     }
 
     private record DateRange(LocalDateTime fromAt, LocalDateTime toAt) {

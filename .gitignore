@@ -11,6 +11,12 @@
 *.p12
 *.pfx
 *.jks
+*.crt
+*.cer
+*.der
+*.csr
+**/secrets/
+**/backups/
 
 # Student imports and local data exports
 *.xlsx
@@ -37,6 +43,11 @@
 **/uploads/
 **/tmp/
 **/temp/
+**/.runtime-*.ps1
+output/
+.security-scans/
+.firecrawl/
+**/.firecrawl/
 
 # IDE and operating system files
 .idea/

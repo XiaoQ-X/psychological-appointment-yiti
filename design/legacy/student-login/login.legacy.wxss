@@ -1,0 +1,92 @@
+.login-page {
+  min-height: 100vh;
+  padding: 72rpx 32rpx 48rpx;
+  background-color: #f4f7f5;
+  background-image: linear-gradient(135deg, rgba(37, 92, 85, 0.06) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(189, 91, 69, 0.04) 1px, transparent 1px);
+  background-size: 38rpx 38rpx;
+}
+
+.login-header {
+  margin-bottom: 28rpx;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin-bottom: 22rpx;
+}
+
+.brand-mark {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24rpx 24rpx 8rpx 24rpx;
+  background: #255c55;
+  color: #ffffff;
+  font-size: 40rpx;
+  font-weight: 800;
+  box-shadow: 8rpx 8rpx 0 #e4b36e;
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+.brand-kicker {
+  color: #bd5b45;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin-bottom: 4rpx;
+}
+
+.notice-panel {
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  background: #e8f3ef;
+  border-color: #b8d7ce;
+}
+
+.notice-title {
+  color: #255c55;
+  font-size: 28rpx;
+  font-weight: 750;
+}
+
+.notice-text {
+  color: #344054;
+  font-size: 24rpx;
+  line-height: 1.55;
+  margin: 8rpx 0 12rpx;
+}
+
+.login-panel {
+  padding: 28rpx;
+}
+
+.login-footer {
+  margin-top: 28rpx;
+  text-align: center;
+}
+
+.login-tip {
+  color: #667085;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 12rpx;
+  color: #216b62;
+  font-size: 24rpx;
+  margin-top: 16rpx;
+}
+
+.dot {
+  color: #98a2b3;
+}
