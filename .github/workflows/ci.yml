@@ -25,6 +25,16 @@ jobs:
       - name: Verify production image pins and provenance
         run: python3 deploy/verify_image_pins.py --verify-registry
 
+  container-build:
+    name: container-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Build backend production image
+        run: docker build --tag psych-appointment-backend:ci psych-appointment-backend
+      - name: Build admin production image
+        run: docker build --tag psych-appointment-admin-web:ci psych-appointment-admin-web
+
   backend-test:
     name: backend-test
     runs-on: ubuntu-latest

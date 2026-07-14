@@ -62,6 +62,8 @@ def validate_lock(lock: dict[str, Any]) -> dict[str, dict[str, Any]]:
         platform = provenance.get("platform")
         if not isinstance(platform, dict) or not platform.get("os") or not platform.get("architecture"):
             raise ValidationError(f"lock entry for {service} has an invalid provenance platform")
+        if not DIGEST_PATTERN.fullmatch(str(provenance.get("platformManifestDigest", ""))):
+            raise ValidationError(f"lock entry for {service} has an invalid platform digest")
         if not isinstance(provenance.get("predicateType"), str):
             raise ValidationError(f"lock entry for {service} is missing a provenance predicate type")
         if not DIGEST_PATTERN.fullmatch(str(provenance.get("attestationManifestDigest", ""))):
@@ -118,8 +120,15 @@ def validate_registry_documents(
     if platform_manifest is None:
         raise ValidationError(f"registry index for {service} is missing the reviewed platform")
 
-    expected_attestation_digest = provenance["attestationManifestDigest"]
+    expected_platform_digest = provenance["platformManifestDigest"]
     platform_digest = platform_manifest.get("digest")
+    if platform_digest != expected_platform_digest:
+        raise ValidationError(
+            f"reviewed platform for {service} resolved to {platform_digest!r}, "
+            f"expected {expected_platform_digest}"
+        )
+
+    expected_attestation_digest = provenance["attestationManifestDigest"]
     attestation_descriptor = next(
         (
             manifest

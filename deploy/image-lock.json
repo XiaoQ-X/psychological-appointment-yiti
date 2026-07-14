@@ -1,6 +1,24 @@
 {
   "schemaVersion": 1,
   "images": {
+    "mysql": {
+      "tag": "mysql:8.4",
+      "reference": "mysql:8.4@sha256:c831a0f11348d402b43d77453e17d770be2eef356615a2823fe0f5a0d6c8b9af",
+      "digest": "sha256:c831a0f11348d402b43d77453e17d770be2eef356615a2823fe0f5a0d6c8b9af",
+      "version": "8.4.10",
+      "source": "https://github.com/docker-library/mysql.git",
+      "sourceRevision": "99f090f89830dbd679771884e723c0f74bec0b29",
+      "reviewedAt": "2026-07-14",
+      "provenance": {
+        "platform": {
+          "os": "linux",
+          "architecture": "amd64"
+        },
+        "platformManifestDigest": "sha256:ef9038553b7ea407704f16770e407ffd32f5566f125d0d94f63ff736af1d43f8",
+        "predicateType": "https://slsa.dev/provenance/v0.2",
+        "attestationManifestDigest": "sha256:e5e397cbdf937c6bb0975916affcf497befd62980f24f4e3ac7cab1909279613"
+      }
+    },
     "redis": {
       "tag": "redis:7.4-alpine",
       "reference": "redis:7.4-alpine@sha256:6ab0b6e7381779332f97b8ca76193e45b0756f38d4c0dcda72dbb3c32061ab99",
@@ -14,6 +32,7 @@
           "os": "linux",
           "architecture": "amd64"
         },
+        "platformManifestDigest": "sha256:b1addbe72465a718643cff9e60a58e6df1841e29d6d7d60c9a85d8d72f08d1a7",
         "predicateType": "https://slsa.dev/provenance/v0.2",
         "attestationManifestDigest": "sha256:c97a2f5364ffcea66c7ab8200d0ffe0b8044b95f960ab7209f07e5fcc2c55356"
       }
