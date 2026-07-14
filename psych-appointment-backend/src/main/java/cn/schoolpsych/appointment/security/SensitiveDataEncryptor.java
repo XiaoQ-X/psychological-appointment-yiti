@@ -40,7 +40,7 @@ public class SensitiveDataEncryptor {
             return null;
         }
         if (key == null) {
-            throw new IllegalStateException("SENSITIVE_DATA_KEY_BASE64 is required when importing sensitive fields");
+            throw new IllegalStateException("SENSITIVE_DATA_KEY_BASE64 is required for sensitive fields");
         }
         try {
             byte[] iv = new byte[IV_BYTES];
@@ -52,5 +52,33 @@ public class SensitiveDataEncryptor {
         } catch (GeneralSecurityException exception) {
             throw new IllegalStateException("Unable to encrypt sensitive data", exception);
         }
+    }
+
+    public String decryptNullable(byte[] encryptedValue) {
+        if (encryptedValue == null || encryptedValue.length == 0) {
+            return null;
+        }
+        if (key == null) {
+            throw new IllegalStateException("SENSITIVE_DATA_KEY_BASE64 is required for sensitive fields");
+        }
+        if (encryptedValue.length <= IV_BYTES + (GCM_TAG_BITS / 8)) {
+            throw new IllegalArgumentException("Encrypted sensitive value is invalid");
+        }
+        try {
+            ByteBuffer buffer = ByteBuffer.wrap(encryptedValue);
+            byte[] iv = new byte[IV_BYTES];
+            buffer.get(iv);
+            byte[] ciphertext = new byte[buffer.remaining()];
+            buffer.get(ciphertext);
+            Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, "AES"), new GCMParameterSpec(GCM_TAG_BITS, iv));
+            return new String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8);
+        } catch (GeneralSecurityException exception) {
+            throw new IllegalArgumentException("Unable to decrypt sensitive data", exception);
+        }
+    }
+
+    public boolean isConfigured() {
+        return key != null;
     }
 }

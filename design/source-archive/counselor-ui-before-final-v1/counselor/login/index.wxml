@@ -1,0 +1,35 @@
+<view class="login-page counselor-login-page">
+  <view class="login-header">
+    <view class="brand-row">
+      <view class="brand-mark counselor-mark">师</view>
+      <view class="brand-copy">
+        <view class="brand-kicker">咨询师工作台</view>
+        <view class="page-title">咨询预约管理</view>
+      </view>
+    </view>
+    <view class="page-subtitle">使用学校后台创建的咨询师账号登录，查看自己的预约并填写咨询记录。</view>
+  </view>
+
+  <view class="panel login-panel">
+    <view class="field">
+      <text class="field-label">账号</text>
+      <input class="input" value="{{username}}" placeholder="请输入咨询师账号" bindinput="onUsernameInput" />
+    </view>
+
+    <view class="field">
+      <text class="field-label">密码</text>
+      <input class="input" value="{{password}}" password placeholder="请输入密码" bindinput="onPasswordInput" />
+    </view>
+
+    <view class="button-stack">
+      <button class="primary-button" loading="{{loading}}" disabled="{{loading}}" bindtap="submit">登录工作台</button>
+    </view>
+  </view>
+
+  <view class="login-footer">
+    <view class="login-tip">账号由后台管理员创建和维护。</view>
+    <view class="footer-links">
+      <text bindtap="openStudentLogin">学生入口</text>
+    </view>
+  </view>
+</view>

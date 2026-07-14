@@ -10,18 +10,15 @@ class RiskAssessmentReviewTest {
     void reviewStoresReviewerStatusAndTime() {
         RiskAssessment assessment = RiskAssessment.create(
                 1L,
-                true,
-                false,
-                true,
-                false,
-                false,
-                true,
+                new byte[]{4, 5, 6},
                 RiskLevel.HIGH);
 
-        assessment.review(RiskReviewStatus.REFERRED, 99L, new byte[]{1, 2, 3});
+        byte[] reviewMetadata = new byte[]{7, 8, 9};
+        assessment.review(RiskReviewStatus.REFERRED, new byte[]{1, 2, 3}, reviewMetadata);
 
         assertThat(assessment.getReviewStatus()).isEqualTo(RiskReviewStatus.REFERRED);
-        assertThat(assessment.getReviewedBy()).isEqualTo(99L);
-        assertThat(assessment.getReviewedAt()).isNotNull();
+        assertThat(assessment.getReviewedBy()).isNull();
+        assertThat(assessment.getReviewedAt()).isNull();
+        assertThat(assessment.getReviewMetadataEncrypted()).isEqualTo(reviewMetadata);
     }
 }

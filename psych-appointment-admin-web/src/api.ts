@@ -191,6 +191,7 @@ export type AppointmentRuleSettings = {
   maxWeeklyAppointments: number
   maxSemesterCompletedAppointments: number
   maxActiveAppointments: number
+  noShowRestrictThreshold: number
 }
 
 export type AppointmentRule = {

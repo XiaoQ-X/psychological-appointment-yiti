@@ -1,28 +1,73 @@
-<view class="page">
-  <view class="panel status-panel {{panelClass}}">
+<view class="page booking-result-page {{panelClass}}">
+  <view class="result-hero">
+    <image class="result-art" src="../../../assets/design/breathing-lines.png" mode="aspectFit" aria-hidden="true" />
+    <view class="result-icon {{panelClass}}">
+      <icon type="{{resultIconType}}" size="52" color="{{isPendingReview ? '#b7791f' : '#167a6e'}}" />
+    </view>
+    <view class="status-eyebrow">{{statusEyebrow}}</view>
     <view class="status-title">{{statusTitle}}</view>
-    <view class="result-desc">{{statusDesc}}</view>
-    <view class="result-tag">
-      <text class="tag {{statusTag}}">{{resultStatusText}}</text>
+    <view class="status-desc">{{statusDesc}}</view>
+  </view>
+
+  <view class="appointment-no-row" wx:if="{{appointmentNo}}" bindtap="copyAppointmentNo">
+    <text>预约编号</text>
+    <text class="appointment-no">{{appointmentNo}}</text>
+    <text class="copy-action">复制</text>
+  </view>
+
+  <view class="result-details">
+    <view class="detail-row">
+      <text class="detail-label">咨询师</text>
+      <text class="detail-value">{{counselorName}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">时间</text>
+      <text class="detail-value">{{slotTime}}</text>
+    </view>
+    <view class="detail-row" wx:if="{{placeText}}">
+      <text class="detail-label">地点</text>
+      <text class="detail-value">{{placeText}}</text>
+    </view>
+    <view class="detail-row">
+      <text class="detail-label">状态</text>
+      <text class="result-tag {{statusTag}}">{{resultStatusText}}</text>
     </view>
   </view>
 
-  <view class="panel section">
-    <view class="section-title">预约信息</view>
-    <view class="divider"></view>
-    <view class="info-row"><text>咨询师</text><text>{{counselorName}}</text></view>
-    <view class="info-row"><text>预约时间</text><text>{{slotTime}}</text></view>
-    <view class="info-row"><text>取消规则</text><text>{{cancelDeadlineText}}</text></view>
+  <view class="next-section">
+    <view class="section-title">接下来</view>
+    <view class="step-list">
+      <view class="step-item">
+        <view class="step-number">1</view>
+        <view class="step-copy">{{nextStepDesc}}</view>
+      </view>
+      <view class="step-item">
+        <view class="step-number">2</view>
+        <view class="step-copy">{{cancelDeadlineText}}</view>
+      </view>
+      <view class="step-item">
+        <view class="step-number">3</view>
+        <view class="step-copy">可在预约详情查看到访说明和最新状态。</view>
+      </view>
+    </view>
   </view>
 
-  <view class="panel section" wx:if="{{isPendingReview}}">
-    <view class="section-title">紧急情况</view>
-    <view class="result-desc">审核等待期间，如果你觉得自己或他人可能处于危险中，请优先联系线下人员。</view>
-    <view class="inline-link emergency-link" bindtap="openEmergency">查看紧急求助方式</view>
+  <view class="support-band" wx:if="{{isPendingReview}}" bindtap="openEmergency">
+    <icon type="warn" size="24" color="#e85a47" />
+    <view class="support-copy">
+      <view class="support-title">此刻需要紧急帮助？</view>
+      <view class="support-desc">请优先联系身边可信任的人或学校值班人员。</view>
+    </view>
+    <view class="support-action">查看</view>
   </view>
 
-  <view class="button-stack">
+  <view class="result-actions">
     <button class="primary-button" bindtap="openDetail">查看预约详情</button>
-    <button class="secondary-button" bindtap="openAppointments">返回我的预约</button>
+    <button class="text-button" bindtap="openAppointments">返回我的预约</button>
+  </view>
+
+  <view class="privacy-note">
+    <icon type="success_no_circle" size="18" color="#5c8a72" />
+    <text>我们严格保护你的隐私，咨询内容仅用于心理咨询服务。</text>
   </view>
 </view>

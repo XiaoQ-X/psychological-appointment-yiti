@@ -3,6 +3,7 @@ package cn.schoolpsych.appointment.counselor.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -15,6 +16,7 @@ import cn.schoolpsych.appointment.repository.AccountRepository;
 import cn.schoolpsych.appointment.repository.CounselorRepository;
 import cn.schoolpsych.appointment.security.TokenClaims;
 import cn.schoolpsych.appointment.security.TokenService;
+import cn.schoolpsych.appointment.security.AccountLoginAttemptService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,6 +28,7 @@ class CounselorAuthServiceTest {
     private CounselorRepository counselorRepository;
     private PasswordEncoder passwordEncoder;
     private TokenService tokenService;
+    private AccountLoginAttemptService loginAttemptService;
     private CounselorAuthService service;
 
     @BeforeEach
@@ -34,7 +37,8 @@ class CounselorAuthServiceTest {
         counselorRepository = mock(CounselorRepository.class);
         passwordEncoder = mock(PasswordEncoder.class);
         tokenService = mock(TokenService.class);
-        service = new CounselorAuthService(accountRepository, counselorRepository, passwordEncoder, tokenService);
+        loginAttemptService = mock(AccountLoginAttemptService.class);
+        service = new CounselorAuthService(accountRepository, counselorRepository, passwordEncoder, tokenService, loginAttemptService);
     }
 
     @Test
@@ -48,7 +52,7 @@ class CounselorAuthServiceTest {
         when(counselorRepository.findByAccountId(3L)).thenReturn(Optional.of(counselor));
         when(passwordEncoder.matches("Password123!", "hash")).thenReturn(true);
         when(tokenService.createAccessToken(account)).thenReturn("token");
-        when(tokenService.parse("token")).thenReturn(new TokenClaims(3L, "counselor_001", AccountRole.COUNSELOR, 123456789L));
+        when(tokenService.parse("token")).thenReturn(new TokenClaims(3L, "counselor_001", AccountRole.COUNSELOR, 123456789L, ""));
 
         CounselorLoginResponse response = service.login(new CounselorLoginRequest("counselor_001", "Password123!"));
 
@@ -65,6 +69,18 @@ class CounselorAuthServiceTest {
 
         assertThatThrownBy(() -> service.login(new CounselorLoginRequest("student_001", "Password123!")))
                 .isInstanceOf(BadCredentialsException.class);
+    }
+
+    @Test
+    void loginRecordsPasswordFailureOutsideLoginTransaction() {
+        Account account = account(AccountRole.COUNSELOR);
+        when(accountRepository.findByUsername("counselor_001")).thenReturn(Optional.of(account));
+        when(passwordEncoder.matches("wrong-password", "hash")).thenReturn(false);
+
+        assertThatThrownBy(() -> service.login(new CounselorLoginRequest("counselor_001", "wrong-password")))
+                .isInstanceOf(BadCredentialsException.class);
+
+        verify(loginAttemptService).recordFailure(3L);
     }
 
     private Account account(AccountRole role) {

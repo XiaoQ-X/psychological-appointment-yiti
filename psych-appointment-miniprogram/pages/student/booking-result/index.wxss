@@ -1,15 +1,271 @@
-.result-desc {
-  color: #344054;
-  font-size: 26rpx;
+page {
+  background: #f7faf9;
+}
+
+.booking-result-page {
+  min-height: 100vh;
+  padding: 34rpx 28rpx 56rpx;
+  color: #15262b;
+  background: #f7faf9;
+}
+
+.result-hero {
+  position: relative;
+  min-height: 390rpx;
+  padding: 20rpx 10rpx 30rpx;
+  overflow: hidden;
+  text-align: center;
+}
+
+.result-art {
+  position: absolute;
+  top: 52rpx;
+  left: -130rpx;
+  width: 960rpx;
+  height: 280rpx;
+  opacity: 0.32;
+  pointer-events: none;
+}
+
+.result-icon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 118rpx;
+  height: 118rpx;
+  margin: 0 auto 20rpx;
+  border: 3rpx solid #167a6e;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.result-icon.warning {
+  border-color: #b7791f;
+}
+
+.status-eyebrow,
+.status-title,
+.status-desc {
+  position: relative;
+  z-index: 1;
+}
+
+.status-eyebrow {
+  color: #167a6e;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.warning .status-eyebrow {
+  color: #b7791f;
+}
+
+.status-title {
+  margin-top: 12rpx;
+  color: #15262b;
+  font-size: 42rpx;
+  font-weight: 800;
+}
+
+.status-desc {
+  max-width: 650rpx;
+  margin: 16rpx auto 0;
+  color: #52656a;
+  font-size: 25rpx;
   line-height: 1.65;
-  margin-top: 14rpx;
+}
+
+.appointment-no-row,
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+}
+
+.appointment-no-row {
+  justify-content: center;
+  min-height: 70rpx;
+  margin: 6rpx auto 20rpx;
+  padding: 12rpx 18rpx;
+  border-radius: 8rpx;
+  color: #52656a;
+  background: #f0f4f3;
+  font-size: 23rpx;
+}
+
+.appointment-no {
+  min-width: 0;
+  overflow: hidden;
+  color: #15262b;
+  font-size: 24rpx;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-action {
+  flex-shrink: 0;
+  color: #167a6e;
+  font-weight: 700;
+}
+
+.result-details {
+  border-top: 1rpx solid #d9e2e0;
+}
+
+.detail-row {
+  justify-content: space-between;
+  min-height: 88rpx;
+  padding: 18rpx 4rpx;
+  border-bottom: 1rpx solid #d9e2e0;
+  font-size: 25rpx;
+}
+
+.detail-label {
+  flex-shrink: 0;
+  color: #52656a;
+}
+
+.detail-value {
+  color: #15262b;
+  font-weight: 650;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .result-tag {
+  padding: 7rpx 13rpx;
+  border-radius: 6rpx;
+  color: #167a6e;
+  background: #eaf5f3;
+  font-size: 22rpx;
+}
+
+.result-tag.warning {
+  color: #b7791f;
+  background: #fff8e8;
+}
+
+.next-section {
+  margin-top: 32rpx;
+}
+
+.section-title {
+  color: #15262b;
+  font-size: 31rpx;
+  font-weight: 800;
+}
+
+.step-list {
   margin-top: 18rpx;
 }
 
-.emergency-link {
-  display: block;
-  margin-top: 16rpx;
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 18rpx;
+  min-height: 80rpx;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40rpx;
+  height: 40rpx;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #167a6e;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.step-copy {
+  flex: 1;
+  padding-top: 3rpx;
+  color: #3f5157;
+  font-size: 24rpx;
+  line-height: 1.55;
+}
+
+.support-band {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  border-left: 4rpx solid #e85a47;
+  background: #fff1ee;
+}
+
+.support-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.support-title {
+  color: #c9473d;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+
+.support-desc {
+  margin-top: 5rpx;
+  color: #76514d;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.support-action {
+  align-self: center;
+  color: #c9473d;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.result-actions {
+  display: grid;
+  gap: 8rpx;
+  margin-top: 32rpx;
+}
+
+.result-actions .primary-button,
+.text-button {
+  width: 100% !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+.result-actions .primary-button {
+  border-radius: 8rpx;
+  background: #167a6e;
+}
+
+.text-button {
+  min-height: 80rpx;
+  border: 0;
+  color: #167a6e;
+  background: transparent;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+.text-button::after {
+  border: 0;
+}
+
+.privacy-note {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: 24rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid #d9e2e0;
+  color: #748388;
+  font-size: 22rpx;
+  line-height: 1.5;
 }

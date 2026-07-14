@@ -14,10 +14,12 @@ class AppointmentAdminWorkflowTest {
 
         assertThat(appointment.canBeCanceledByAdmin()).isTrue();
 
-        appointment.cancelByAdmin(99L, "admin reason");
+        byte[] encryptedReason = new byte[]{1, 2, 3};
+        appointment.cancelByAdmin(99L, encryptedReason);
 
         assertThat(appointment.getStatus()).isEqualTo(AppointmentStatus.CANCELED_BY_ADMIN);
-        assertThat(appointment.getCancelReason()).isEqualTo("admin reason");
+        assertThat(appointment.getLegacyCancelReason()).isNull();
+        assertThat(appointment.getCancelReasonEncrypted()).isEqualTo(encryptedReason);
         assertThat(appointment.getCanceledAt()).isNotNull();
     }
 

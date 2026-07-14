@@ -1,79 +1,70 @@
-<view class="page with-bottom-action">
-  <view wx:if="{{loading}}" class="empty">正在加载预约</view>
+<view class="record-page">
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-title">正在加载预约</view>
+    <view class="empty-text">请稍候，正在准备咨询记录。</view>
+  </view>
 
   <view wx:else>
-    <view class="panel summary-card">
-      <view class="row">
+    <view class="record-summary">
+      <view class="summary-head">
         <view>
-          <view class="status-label">即将完成</view>
-          <view class="card-title">{{detail.studentText}}</view>
-          <view class="card-meta">{{detail.timeText}}</view>
+          <view class="summary-kicker">完成本次咨询</view>
+          <view class="student-name">{{detail.studentText}}</view>
         </view>
-        <text class="tag {{detail.tagType}}">{{detail.statusText}}</text>
+        <text class="status-tag {{detail.tagType}}">{{detail.statusText}}</text>
       </view>
-      <view class="card-meta">{{detail.placeText}}</view>
+      <view class="summary-time">{{detail.timeText}}</view>
+      <view class="summary-place">{{detail.placeText}}</view>
     </view>
 
-    <view class="panel section">
-      <view class="section-title">咨询记录</view>
+    <view class="privacy-band">
+      <icon type="info" size="20" color="#167a6e" />
+      <text>咨询记录属于敏感信息，请基于事实填写并控制必要范围。</text>
+    </view>
+
+    <view class="form-section">
+      <view class="section-heading">
+        <view class="section-title">咨询记录</view>
+        <view class="required-note">主题与摘要必填</view>
+      </view>
+
       <view class="field">
         <text class="field-label">咨询主题</text>
-        <input
-          class="input"
-          maxlength="500"
-          value="{{topic}}"
-          placeholder="例如：学业压力与睡眠调整"
-          bindinput="onTopicInput"
-        />
+        <input class="record-input" maxlength="500" value="{{topic}}" placeholder="例如：学业压力与睡眠调整" placeholder-class="input-placeholder" bindinput="onTopicInput" />
       </view>
 
       <view class="field">
         <text class="field-label">记录摘要</text>
-        <textarea
-          class="textarea note-textarea"
-          maxlength="10000"
-          value="{{summary}}"
-          placeholder="记录咨询过程、主要问题、干预方向和学生反馈。"
-          bindinput="onSummaryInput"
-        />
+        <textarea class="record-textarea summary-textarea" maxlength="10000" value="{{summary}}" placeholder="记录主要问题、咨询过程、干预方向和学生反馈" placeholder-class="input-placeholder" bindinput="onSummaryInput" />
+        <view class="field-help">请勿记录与咨询无关的个人信息</view>
       </view>
 
       <view class="field">
         <text class="field-label">风险变化</text>
         <picker mode="selector" range="{{riskOptions}}" range-key="label" value="{{riskChangeIndex}}" bindchange="onRiskChange">
-          <view class="select-row">{{selectedRiskLabel}}</view>
+          <view class="select-row">
+            <text>{{selectedRiskLabel}}</text>
+            <text class="select-action">选择</text>
+          </view>
         </picker>
       </view>
 
       <view class="field">
         <text class="field-label">后续计划</text>
-        <textarea
-          class="textarea plan-textarea"
-          maxlength="10000"
-          value="{{followUpPlan}}"
-          placeholder="可填写复访建议、转介建议、学生自助任务等。"
-          bindinput="onFollowUpPlanInput"
-        />
+        <textarea class="record-textarea plan-textarea" maxlength="10000" value="{{followUpPlan}}" placeholder="填写复访、转介或学生自助任务等后续安排" placeholder-class="input-placeholder" bindinput="onFollowUpPlanInput" />
       </view>
 
-      <view class="switch-row">
-        <view>
-          <view class="switch-title">需要转介</view>
-          <view class="switch-note">开启后后台可继续跟进转介流程。</view>
+      <view class="referral-row">
+        <view class="referral-copy">
+          <view class="referral-title">需要转介</view>
+          <view class="referral-note">开启后，管理端可继续跟进转介流程</view>
         </view>
-        <switch checked="{{needReferral}}" color="#216b62" bindchange="onNeedReferralChange" />
+        <switch checked="{{needReferral}}" color="#167a6e" bindchange="onNeedReferralChange" />
       </view>
     </view>
   </view>
 
   <view class="bottom-action">
-    <button
-      class="primary-button"
-      loading="{{submitting}}"
-      disabled="{{submitDisabled}}"
-      bindtap="submit"
-    >
-      提交并完成咨询
-    </button>
+    <button class="submit-button" loading="{{submitting}}" disabled="{{submitDisabled}}" bindtap="submit">提交并完成咨询</button>
   </view>
 </view>

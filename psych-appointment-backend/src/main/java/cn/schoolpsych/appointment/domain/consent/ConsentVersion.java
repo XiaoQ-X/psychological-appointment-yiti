@@ -32,4 +32,24 @@ public class ConsentVersion extends BaseEntity {
     public Long getId() {
         return super.getId();
     }
+
+    public String getVersionNo() {
+        return versionNo;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getPublishedAt() {
+        return publishedAt;
+    }
 }

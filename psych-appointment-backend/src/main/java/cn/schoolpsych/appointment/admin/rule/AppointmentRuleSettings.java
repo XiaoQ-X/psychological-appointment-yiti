@@ -11,9 +11,10 @@ public record AppointmentRuleSettings(
         @Min(0) @Max(336) int minCancelHoursAhead,
         @Min(1) @Max(10) int maxWeeklyAppointments,
         @Min(1) @Max(100) int maxSemesterCompletedAppointments,
-        @Min(1) @Max(5) int maxActiveAppointments) {
+        @Min(1) @Max(5) int maxActiveAppointments,
+        @Min(1) @Max(10) Integer noShowRestrictThreshold) {
 
     public static AppointmentRuleSettings defaults() {
-        return new AppointmentRuleSettings(10, 10, 14, 24, 24, 1, 8, 1);
+        return new AppointmentRuleSettings(10, 10, 14, 24, 24, 1, 8, 1, 2);
     }
 }

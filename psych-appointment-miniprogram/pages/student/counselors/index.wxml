@@ -1,79 +1,143 @@
-<view class="page">
-  <view class="row page-head">
-    <view>
-      <view class="page-title">选择咨询师</view>
-      <view class="page-subtitle">查看未来两周可预约的咨询师和时段。</view>
+<view class="page counselors-home">
+  <view class="brand-row">
+    <view class="brand-lockup">
+      <text class="brand-name">校园节奏</text>
+      <view class="brand-divider"></view>
+      <text class="brand-product">心理咨询预约</text>
     </view>
-    <button class="ghost-button" bindtap="logout">退出</button>
+    <button class="logout-button" bindtap="logout">退出</button>
   </view>
 
-  <view class="panel next-panel" bindtap="openNextAppointment">
-    <view class="row">
+  <swiper
+    class="care-swiper"
+    autoplay="true"
+    circular="true"
+    interval="4000"
+    duration="360"
+    indicator-dots="true"
+    indicator-color="#b8cfca"
+    indicator-active-color="#167a6e"
+  >
+    <swiper-item wx:for="{{banners}}" wx:key="title">
+      <view class="care-banner" data-action="{{item.action}}" bindtap="handleBannerTap">
+        <image class="care-banner-art" src="{{item.image}}" mode="aspectFill" aria-hidden="true" />
+        <view class="care-banner-copy">
+          <view class="care-banner-title">{{item.title}}</view>
+          <view class="care-banner-text">{{item.description}}</view>
+          <view class="care-banner-link">{{item.linkText}}</view>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <view class="next-band" bindtap="openNextAppointment" hover-class="band-pressed">
+    <view class="next-icon"><icon type="success_no_circle" size="24" color="#167a6e" /></view>
+    <view class="next-copy" wx:if="{{nextAppointment}}">
+      <view class="next-heading-row">
+        <view class="next-label">下次预约</view>
+        <text class="tag {{nextAppointment.tagType}}">{{nextAppointment.statusText}}</text>
+      </view>
+      <view class="next-time">{{nextAppointment.timeText}}</view>
+      <view class="next-meta">{{nextAppointment.counselorText}} · {{nextAppointment.placeText}}</view>
+    </view>
+    <view class="next-copy" wx:else>
+      <view class="next-label">还没有进行中的预约</view>
+      <view class="next-meta">选择日期和咨询师，查看本周可约时间。</view>
+    </view>
+    <text class="row-action">{{nextAppointment ? '详情' : '预约'}}</text>
+  </view>
+
+  <view class="date-section">
+    <view class="section-heading">
       <view>
-        <view class="next-label">我的下一次预约</view>
-        <view class="next-title" wx:if="{{nextAppointment}}">{{nextAppointment.counselorText}}</view>
-        <view class="next-title" wx:else>暂无待到访预约</view>
+        <view class="section-title">选择日期</view>
+        <view class="section-note">按日期查看可约咨询师和时段</view>
       </view>
-      <text wx:if="{{nextAppointment}}" class="tag {{nextAppointment.tagType}}">{{nextAppointment.statusText}}</text>
-      <text wx:else class="tag neutral">查看记录</text>
+      <view class="section-link" bindtap="showAllDates">全部日期</view>
     </view>
-    <view wx:if="{{nextAppointment}}" class="next-meta">{{nextAppointment.timeText}} · {{nextAppointment.placeText}}</view>
-    <view wx:else class="next-meta">完成预约后，可在这里快速查看时间、地点和状态。</view>
-  </view>
-
-  <view class="quick-grid">
-    <view class="quick-card" bindtap="openEmergency">
-      <view class="quick-title">紧急求助</view>
-      <view class="quick-text">无需登录也可查看</view>
-    </view>
-    <view class="quick-card muted-card" bindtap="openConsent">
-      <view class="quick-title">服务须知</view>
-      <view class="quick-text">保密原则与取消规则</view>
-    </view>
-  </view>
-
-  <scroll-view class="filter-scroll" scroll-x>
-    <view class="filter-row">
-      <view wx:for="{{filterChips}}" wx:key="label" class="filter-chip {{item.activeClass}}">
-        {{item.label}}
+    <scroll-view class="week-scroll" scroll-x enhanced show-scrollbar="false">
+      <view class="week-row">
+        <view
+          wx:for="{{weekDates}}"
+          wx:key="key"
+          class="date-cell {{item.activeClass}} {{item.disabledClass}}"
+          data-key="{{item.key}}"
+          bindtap="selectDate"
+        >
+          <view class="date-weekday">{{item.weekday}}</view>
+          <view class="date-value">{{item.dateText}}</view>
+          <view class="date-count">{{item.metaText}}</view>
+        </view>
       </view>
-    </view>
-  </scroll-view>
-
-  <view wx:if="{{loading}}" class="empty">正在加载咨询师</view>
-
-  <view wx:elif="{{counselors.length == 0}}" class="empty">
-    暂无可预约咨询师，请稍后再试。
+    </scroll-view>
   </view>
 
-  <view wx:else class="section card-list">
+  <view class="section-heading counselor-heading" id="counselor-list">
+    <view>
+      <view class="section-title">可约咨询师</view>
+      <view class="section-note">按最近可约时间排序</view>
+    </view>
+    <view class="section-link" bindtap="showAllDates">查看全部</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-title">正在加载可约时间</view>
+    <view class="empty-text">请稍候，正在同步咨询师排班。</view>
+  </view>
+
+  <view wx:elif="{{counselors.length == 0}}" class="empty-state">
+    <view class="empty-title">当前日期暂无可约咨询师</view>
+    <view class="empty-text">可以选择其他日期，或查看本周全部可约时间。</view>
+    <button class="empty-action" bindtap="showAllDates">查看本周全部</button>
+  </view>
+
+  <view wx:else class="counselor-list">
     <view
       wx:for="{{counselors}}"
       wx:key="id"
-      class="card counselor-card"
+      class="counselor-row"
       data-id="{{item.id}}"
       bindtap="openDetail"
     >
-      <view class="row">
-        <view>
-          <view class="card-title">{{item.name}}</view>
-          <view class="card-meta">{{item.titleText}} · {{item.campusText}}</view>
+      <image wx:if="{{item.avatarUrl}}" class="counselor-avatar" src="{{item.avatarUrl}}" mode="aspectFill" />
+      <view wx:else class="counselor-avatar counselor-avatar-fallback">{{item.initial}}</view>
+
+      <view class="counselor-main">
+        <view class="counselor-name-row">
+          <view class="counselor-name">{{item.name}}</view>
+          <view class="verified-mark">校内认证</view>
         </view>
-        <text class="tag {{item.slotTagType}}">
-          {{item.availableSlotCount}} 个时段
-        </text>
+        <view class="counselor-title">{{item.titleText}}</view>
+        <view class="expertise-row" wx:if="{{item.expertise.length}}">
+          <text wx:for="{{item.expertise}}" wx:key="*this" class="expertise-tag">{{item}}</text>
+        </view>
+        <view class="availability-row">
+          <text>{{item.campusText}}</text>
+          <text>{{item.weekAvailabilityText}}</text>
+        </view>
+        <view class="slot-preview" wx:if="{{item.visibleSlots.length}}">
+          <view
+            wx:for="{{item.visibleSlots}}"
+            wx:for-item="slot"
+            wx:key="id"
+            class="slot-button"
+            data-counselor-id="{{item.id}}"
+            data-slot-id="{{slot.id}}"
+            catchtap="openPreviewSlot"
+          >{{slot.shortText}}</view>
+        </view>
+        <view class="no-slot-note" wx:else>查看该咨询师其他可约时间</view>
       </view>
-
-      <view class="expertise-row" wx:if="{{item.expertise.length}}">
-        <text wx:for="{{item.expertise}}" wx:key="*this" class="chip">{{item}}</text>
-      </view>
-
-      <view class="card-meta" wx:if="{{item.nextAvailableText}}">
-        最近可约：{{item.nextAvailableText}}
-      </view>
-      <view class="card-meta" wx:else>
-        当前暂无可约时段
-      </view>
+      <text class="row-action">详情</text>
     </view>
+  </view>
+
+  <view class="emergency-band" bindtap="openEmergency" hover-class="band-pressed">
+    <icon type="warn" size="25" color="#e85a47" />
+    <view class="emergency-copy">
+      <view class="emergency-title">紧急求助</view>
+      <view class="emergency-text">如遇紧急情况，请优先使用危机干预渠道</view>
+    </view>
+    <text class="row-action emergency-arrow">查看</text>
   </view>
 </view>

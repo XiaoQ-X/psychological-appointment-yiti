@@ -1,0 +1,83 @@
+<view class="login-page">
+  <view class="login-header">
+    <view class="brand-line">
+      <view class="brand-name">心理预约</view>
+      <view class="brand-divider"></view>
+      <view class="brand-motto">温暖陪伴 · 用心倾听</view>
+    </view>
+    <view class="brand-kicker">本校心理咨询预约</view>
+    <view class="page-title">登录学生账号</view>
+    <view class="page-subtitle">使用学校统一分配的学号和初始密码，查看咨询师与可预约时间。</view>
+    <image
+      class="login-art"
+      src="../../assets/design/breathing-lines.png"
+      mode="aspectFit"
+      aria-hidden="true"
+    />
+  </view>
+
+  <view class="emergency-entry" bindtap="openEmergency">
+    <icon type="warn" size="24" color="#d36f62" />
+    <view class="emergency-copy">
+      <view class="emergency-title">需要立即帮助？</view>
+      <view class="emergency-text">无需登录，可直接查看紧急联系方式</view>
+    </view>
+    <text class="entry-arrow">›</text>
+  </view>
+
+  <view class="login-panel">
+    <view class="form-title">学生登录</view>
+    <view class="form-note">预约和咨询信息仅用于校园心理服务。</view>
+    <view class="field">
+      <text class="field-label">学号</text>
+      <view class="input-shell">
+        <input
+          class="login-input"
+          value="{{username}}"
+          placeholder="请输入学号"
+          maxlength="64"
+          confirm-type="next"
+          bindinput="onUsernameInput"
+        />
+        <icon wx:if="{{username}}" type="clear" size="20" color="#9aa39c" bindtap="clearUsername" />
+      </view>
+    </view>
+
+    <view class="field">
+      <view class="password-label-row">
+        <text class="field-label">密码</text>
+        <text class="password-toggle" bindtap="togglePasswordVisibility">{{passwordVisible ? '隐藏' : '显示'}}</text>
+      </view>
+      <view class="input-shell">
+        <input
+          class="login-input"
+          value="{{password}}"
+          password="{{passwordMode}}"
+          placeholder="请输入密码"
+          maxlength="128"
+          confirm-type="go"
+          bindinput="onPasswordInput"
+          bindconfirm="onPasswordConfirm"
+        />
+      </view>
+    </view>
+
+    <button
+      class="login-button {{!canSubmit || loading ? 'disabled' : ''}}"
+      loading="{{loading}}"
+      disabled="{{!canSubmit || loading}}"
+      bindtap="submit"
+    >登录</button>
+
+    <view class="password-help">忘记密码请联系学校心理中心或辅导员处理。</view>
+  </view>
+
+  <view class="login-footer">
+    <view class="footer-links">
+      <view class="footer-link" bindtap="openConsent">查看服务须知</view>
+      <view class="footer-divider"></view>
+      <view class="footer-link" bindtap="openCounselorLogin">咨询师登录</view>
+    </view>
+    <view class="privacy-note">登录即表示你了解本校心理咨询服务的保密原则与服务边界。</view>
+  </view>
+</view>

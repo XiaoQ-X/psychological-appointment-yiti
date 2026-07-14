@@ -4,11 +4,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import cn.schoolpsych.appointment.domain.common.BaseEntity;
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "appointments")
@@ -79,6 +84,12 @@ public class Appointment extends BaseEntity {
 
     @Column(name = "cancel_reason", length = 500)
     private String cancelReason;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Column(name = "cancel_reason_encrypted")
+    private byte[] cancelReasonEncrypted;
 
     @Column(name = "canceled_by")
     private Long canceledBy;
@@ -174,17 +185,22 @@ public class Appointment extends BaseEntity {
         return completedAt;
     }
 
-    public String getCancelReason() {
+    public String getLegacyCancelReason() {
         return cancelReason;
+    }
+
+    public byte[] getCancelReasonEncrypted() {
+        return cancelReasonEncrypted;
     }
 
     public boolean canBeCanceledByStudent(LocalDateTime now) {
         return STUDENT_CANCELABLE_STATUSES.contains(status) && startAt.isAfter(now);
     }
 
-    public void cancelByStudent(Long actorAccountId, String reason) {
+    public void cancelByStudent(Long actorAccountId, byte[] encryptedReason) {
         this.status = AppointmentStatus.CANCELED_BY_STUDENT;
-        this.cancelReason = reason;
+        this.cancelReason = null;
+        this.cancelReasonEncrypted = encryptedReason;
         this.canceledBy = actorAccountId;
         this.canceledAt = LocalDateTime.now();
     }
@@ -193,9 +209,10 @@ public class Appointment extends BaseEntity {
         return ADMIN_CANCELABLE_STATUSES.contains(status);
     }
 
-    public void cancelByAdmin(Long actorAccountId, String reason) {
+    public void cancelByAdmin(Long actorAccountId, byte[] encryptedReason) {
         this.status = AppointmentStatus.CANCELED_BY_ADMIN;
-        this.cancelReason = reason;
+        this.cancelReason = null;
+        this.cancelReasonEncrypted = encryptedReason;
         this.canceledBy = actorAccountId;
         this.canceledAt = LocalDateTime.now();
     }
@@ -216,12 +233,33 @@ public class Appointment extends BaseEntity {
         this.status = AppointmentStatus.CLOSED;
     }
 
-    public boolean canBeCompletedByCounselor() {
-        return COUNSELOR_COMPLETABLE_STATUSES.contains(status);
+    public boolean canBeCompletedByCounselor(LocalDateTime now) {
+        return COUNSELOR_COMPLETABLE_STATUSES.contains(status) && !startAt.isAfter(now);
     }
 
-    public void complete() {
+    public void complete(LocalDateTime now) {
+        if (!canBeCompletedByCounselor(now)) {
+            throw new IllegalArgumentException("Appointment cannot be completed");
+        }
         this.status = AppointmentStatus.COMPLETED;
-        this.completedAt = LocalDateTime.now();
+        this.completedAt = now;
+    }
+
+    public boolean canBeMarkedNoShow(LocalDateTime now) {
+        return status == AppointmentStatus.CONFIRMED && !endAt.isAfter(now);
+    }
+
+    public void markNoShow(LocalDateTime now) {
+        if (!canBeMarkedNoShow(now)) {
+            throw new IllegalArgumentException("Appointment cannot be marked as no-show");
+        }
+        this.status = AppointmentStatus.NO_SHOW;
+    }
+
+    public void migrateCancelReason(byte[] encryptedReason) {
+        if (this.cancelReasonEncrypted == null && encryptedReason != null) {
+            this.cancelReasonEncrypted = encryptedReason;
+            this.cancelReason = null;
+        }
     }
 }

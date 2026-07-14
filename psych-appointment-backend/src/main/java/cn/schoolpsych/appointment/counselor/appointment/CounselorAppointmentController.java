@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 import cn.schoolpsych.appointment.common.api.ApiResponse;
+import cn.schoolpsych.appointment.admin.audit.AuditRequestMetadata;
 import cn.schoolpsych.appointment.domain.appointment.AppointmentStatus;
 import cn.schoolpsych.appointment.security.AuthenticatedAccount;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -49,7 +51,18 @@ public class CounselorAppointmentController {
     ApiResponse<CompleteAppointmentResponse> complete(
             @PathVariable Long appointmentId,
             @Valid @RequestBody CompleteAppointmentRequest request,
-            @AuthenticationPrincipal AuthenticatedAccount principal) {
-        return ApiResponse.ok(counselorAppointmentService.complete(appointmentId, request, principal));
+            @AuthenticationPrincipal AuthenticatedAccount principal,
+            HttpServletRequest servletRequest) {
+        return ApiResponse.ok(counselorAppointmentService.complete(
+                appointmentId, request, principal, AuditRequestMetadata.from(servletRequest)));
+    }
+
+    @PostMapping("/{appointmentId}/no-show")
+    ApiResponse<MarkNoShowResponse> markNoShow(
+            @PathVariable Long appointmentId,
+            @AuthenticationPrincipal AuthenticatedAccount principal,
+            HttpServletRequest servletRequest) {
+        return ApiResponse.ok(counselorAppointmentService.markNoShow(
+                appointmentId, principal, AuditRequestMetadata.from(servletRequest)));
     }
 }

@@ -1,37 +1,86 @@
-<view class="page with-bottom-action">
-  <view wx:if="{{loading}}" class="empty">正在加载详情</view>
+<view class="page with-bottom-action detail-page">
+  <view wx:if="{{loading}}" class="detail-loading">
+    <view class="loading-title">正在加载咨询师信息</view>
+    <view class="loading-text">请稍候，正在同步最新排班。</view>
+  </view>
 
   <view wx:else>
-    <view class="panel profile-panel">
-      <view class="row">
-        <view>
-          <view class="page-title">{{counselor.name}}</view>
-          <view class="page-subtitle">{{counselor.titleText}} · {{counselor.campusText}}</view>
+    <view class="profile-band">
+      <image class="profile-band-lines" src="../../../assets/design/breathing-lines.png" mode="aspectFit" aria-hidden="true" />
+      <image wx:if="{{counselor.avatarUrl}}" class="detail-avatar" src="{{counselor.avatarUrl}}" mode="aspectFill" />
+      <view wx:else class="detail-avatar detail-avatar-fallback">{{counselor.initial}}</view>
+      <view class="identity-copy">
+        <view class="identity-name-row">
+          <view class="identity-name">{{counselor.name}}</view>
+          <view class="verified-badge">校内认证</view>
         </view>
-        <text class="tag">{{counselor.slotCount}} 个时段</text>
-      </view>
-
-      <view class="expertise-row" wx:if="{{counselor.hasExpertise}}">
-        <text wx:for="{{counselor.expertise}}" wx:key="*this" class="chip">{{item}}</text>
-      </view>
-
-      <view class="divider"></view>
-      <view class="section-label">咨询师简介</view>
-      <view class="profile-text">{{counselor.introText}}</view>
-      <view class="section-label training-label" wx:if="{{counselor.trainingBackground}}">受训背景</view>
-      <view class="profile-text muted" wx:if="{{counselor.trainingBackground}}">
-        {{counselor.trainingBackground}}
+        <view class="identity-title">{{counselor.titleText}}</view>
+        <view class="identity-campus">{{counselor.campusText}}</view>
       </view>
     </view>
 
-    <view class="section">
-      <view class="section-head">
-        <view class="section-title">可预约时段</view>
-        <view class="section-note">未来两周</view>
+    <view class="profile-section" wx:if="{{counselor.hasExpertise}}">
+      <view class="section-label">擅长领域</view>
+      <view class="expertise-row">
+        <text wx:for="{{counselor.expertise}}" wx:key="*this" class="expertise-tag">{{item}}</text>
       </view>
-      <view wx:if="{{slots.length == 0}}" class="empty small-empty">暂无可预约时段</view>
+    </view>
+
+    <view class="profile-section intro-section">
+      <view class="section-label">咨询简介</view>
+      <view class="profile-text {{introExpanded ? '' : 'profile-text-clamped'}}">{{counselor.introText}}</view>
+      <view class="profile-text training-text {{introExpanded ? '' : 'profile-text-clamped'}}" wx:if="{{counselor.trainingBackground}}">
+        {{counselor.trainingBackground}}
+      </view>
+      <view class="intro-toggle" wx:if="{{counselor.trainingBackground}}" bindtap="toggleIntro">
+        {{introExpanded ? '收起介绍' : '查看全部介绍'}}
+      </view>
+    </view>
+
+    <view class="date-section">
+      <view class="section-heading">
+        <view>
+          <view class="section-title">选择日期</view>
+          <view class="section-note">选择日期后查看当天可约时段</view>
+        </view>
+        <view class="section-link" bindtap="showAllSlots">全部时段</view>
+      </view>
+      <scroll-view class="week-scroll" scroll-x enhanced show-scrollbar="false">
+        <view class="week-row">
+          <view
+            wx:for="{{weekDates}}"
+            wx:key="key"
+            class="date-cell {{item.activeClass}} {{item.disabledClass}}"
+            data-key="{{item.key}}"
+            bindtap="selectDate"
+          >
+            <view class="date-weekday">{{item.weekday}}</view>
+            <view class="date-value">{{item.dateText}}</view>
+            <view class="date-count">{{item.metaText}}</view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="slot-section">
+      <view class="section-heading slot-heading">
+        <view>
+          <view class="section-title">可预约时段</view>
+          <view class="section-note">选择后继续填写预约信息</view>
+        </view>
+        <view class="slot-count">共 {{visibleSlotCount}} 个</view>
+      </view>
+
+      <view wx:if="{{selectedSlotId}}" class="selection-note">已选择时段，确认无误后继续填写预约信息。</view>
+
+      <view wx:if="{{visibleSlotGroups.length == 0}}" class="empty-state">
+        <view class="empty-title">当前日期暂无可约时段</view>
+        <view class="empty-text">请选择其他日期，或查看未来两周全部时段。</view>
+        <button class="empty-action" bindtap="showAllSlots">查看全部时段</button>
+      </view>
+
       <view wx:else class="slot-groups">
-        <view wx:for="{{slotGroups}}" wx:key="dateText" class="slot-group">
+        <view wx:for="{{visibleSlotGroups}}" wx:key="dateKey" class="slot-group">
           <view class="date-title">{{item.dateText}}</view>
           <view class="slot-grid">
             <view
@@ -42,7 +91,10 @@
               data-id="{{slot.id}}"
               bindtap="selectSlot"
             >
-              <view class="slot-time">{{slot.timeOnlyText}}</view>
+              <view class="slot-topline">
+                <view class="slot-time">{{slot.timeOnlyText}}</view>
+                <view wx:if="{{slot.selectedClass}}" class="selected-mark">已选</view>
+              </view>
               <view class="slot-place">{{slot.placeText}}</view>
               <view class="slot-mode">{{slot.modeText}}</view>
             </view>

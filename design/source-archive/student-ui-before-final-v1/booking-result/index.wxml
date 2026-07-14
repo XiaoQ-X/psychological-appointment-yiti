@@ -1,0 +1,80 @@
+<view class="page booking-result-page {{panelClass}}">
+  <view class="result-hero">
+    <image
+      class="result-breathing-art"
+      src="../../../assets/design/breathing-lines.png"
+      mode="aspectFit"
+      aria-hidden="true"
+    />
+    <view class="result-icon {{panelClass}}">
+      <icon type="{{resultIconType}}" size="42" color="{{isPendingReview ? '#d7a64d' : '#7b9476'}}" />
+    </view>
+    <view class="status-eyebrow">{{statusEyebrow}}</view>
+    <view class="status-title">{{statusTitle}}</view>
+    <view class="result-desc">{{statusDesc}}</view>
+    <text class="tag result-tag {{statusTag}}">{{resultStatusText}}</text>
+  </view>
+
+  <view class="appointment-ticket">
+    <view class="ticket-head">
+      <view>
+        <view class="ticket-kicker">预约信息</view>
+        <view class="section-title">本次预约</view>
+      </view>
+      <view class="ticket-mark">心理预约</view>
+    </view>
+    <view class="ticket-divider"><text class="ticket-dash"></text></view>
+    <view class="ticket-row">
+      <view class="ticket-label">咨询师</view>
+      <view class="ticket-value">{{counselorName}}</view>
+    </view>
+    <view class="ticket-row">
+      <view class="ticket-label">预约时间</view>
+      <view class="ticket-value time-value">{{slotTime}}</view>
+    </view>
+    <view class="ticket-row" wx:if="{{placeText}}">
+      <view class="ticket-label">到访地点</view>
+      <view class="ticket-value">{{placeText}}</view>
+    </view>
+    <view class="ticket-row appointment-no-row" wx:if="{{appointmentNo}}" bindtap="copyAppointmentNo">
+      <view class="ticket-label">预约号</view>
+      <view class="ticket-value appointment-no-value">{{appointmentNo}}<text class="copy-label">复制</text></view>
+    </view>
+    <view class="ticket-row rule-row">
+      <view class="ticket-label">温馨提示</view>
+      <view class="ticket-value">{{cancelDeadlineText}}</view>
+    </view>
+  </view>
+
+  <view class="next-section">
+    <view class="section-title">接下来</view>
+    <view class="next-step">
+      <view class="step-marker"><view class="step-dot"></view></view>
+      <view class="step-copy">
+        <view class="step-title">{{nextStepTitle}}</view>
+        <view class="step-desc">{{nextStepDesc}}</view>
+      </view>
+    </view>
+    <view class="next-step secondary-step">
+      <view class="step-marker"><view class="step-dot"></view></view>
+      <view class="step-copy">
+        <view class="step-title">需要调整时提前处理</view>
+        <view class="step-desc">可在“我的预约”查看详情，并按学校规则申请取消。</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="support-band" wx:if="{{isPendingReview}}">
+    <icon type="warn" size="24" color="#d36f62" />
+    <view class="support-copy">
+      <view class="support-title">此刻需要紧急帮助？</view>
+      <view class="support-desc">请优先联系身边可信任的人或学校值班人员。</view>
+      <view class="emergency-link" bindtap="openEmergency">查看紧急求助方式 <text class="link-arrow">›</text></view>
+    </view>
+  </view>
+
+  <view class="result-actions">
+    <button class="primary-button" bindtap="openDetail">查看预约详情</button>
+    <button class="text-button" bindtap="openAppointments">返回我的预约</button>
+  </view>
+</view>

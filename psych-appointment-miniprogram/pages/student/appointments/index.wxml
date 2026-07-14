@@ -1,70 +1,90 @@
-<view class="page">
-  <view class="page-title">我的预约</view>
-  <view class="page-subtitle">查看预约进度、取消预约或回看历史记录。</view>
+<view class="page appointments-page">
+  <view class="appointments-head">
+    <image class="head-art" src="../../../assets/design/breathing-lines.png" mode="aspectFit" aria-hidden="true" />
+    <button class="refresh-button" aria-label="刷新预约记录" bindtap="refreshAppointments">
+      <icon type="waiting" size="23" color="#15262b" />
+    </button>
+    <view class="page-title">我的预约</view>
+    <view class="page-subtitle">查看预约时间、地点、状态，或按规则调整安排。</view>
+  </view>
 
-  <scroll-view class="filter-scroll" scroll-x>
+  <view class="summary-strip" wx:if="{{!loading}}">
+    <view class="summary-item">
+      <view class="summary-value">{{currentAppointments.length}}</view>
+      <view class="summary-label">当前预约</view>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item">
+      <view class="summary-value history-value">{{historyAppointments.length}}</view>
+      <view class="summary-label">历史记录</view>
+    </view>
+  </view>
+
+  <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="false">
     <view class="filter-row">
-      <view
-        wx:for="{{filters}}"
-        wx:key="value"
-        class="filter-chip {{item.activeClass}}"
-        data-value="{{item.value}}"
-        bindtap="changeFilter"
-      >
-        {{item.label}}
-      </view>
+      <view wx:for="{{filters}}" wx:key="value" class="filter-chip {{item.activeClass}}" data-value="{{item.value}}" bindtap="changeFilter">{{item.label}}</view>
     </view>
   </scroll-view>
 
-  <view wx:if="{{loading}}" class="empty">正在加载预约</view>
-
-  <view wx:elif="{{appointments.length == 0}}" class="empty">
-    暂无预约记录
+  <view wx:if="{{loading}}" class="state-view">
+    <icon type="waiting" size="34" color="#167a6e" />
+    <view class="state-title">正在整理预约记录</view>
+    <view class="state-desc">请稍候，正在同步最新状态。</view>
   </view>
 
-  <view wx:else>
-    <view class="section" wx:if="{{currentAppointments.length}}">
+  <view wx:elif="{{appointments.length == 0}}" class="state-view">
+    <icon type="info" size="36" color="#167a6e" />
+    <view class="state-title">{{activeStatus ? '当前筛选下没有记录' : '还没有预约记录'}}</view>
+    <view class="state-desc">{{activeStatus ? '切换上方状态查看其他预约。' : '选择一位合适的咨询师，开始第一次预约。'}}</view>
+    <button wx:if="{{!activeStatus}}" class="empty-action" bindtap="startBooking">去选择咨询师</button>
+  </view>
+
+  <view wx:else class="appointment-groups">
+    <view class="appointment-section" wx:if="{{currentAppointments.length}}">
       <view class="section-head">
         <view class="section-title">当前预约</view>
         <view class="section-note">{{currentAppointments.length}} 条</view>
       </view>
-      <view class="card-list">
-        <view
-          wx:for="{{currentAppointments}}"
-          wx:key="appointmentId"
-          class="card appointment-card current"
-          data-id="{{item.appointmentId}}"
-          bindtap="openDetail"
-        >
-          <view class="row">
-            <view class="card-title">{{item.counselorText}}</view>
-            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+      <view class="appointment-list">
+        <view wx:for="{{currentAppointments}}" wx:key="appointmentId" class="appointment-row current" data-id="{{item.appointmentId}}" bindtap="openDetail">
+          <view class="date-block">
+            <view class="date-main">{{item.monthDayText}}</view>
+            <view class="date-week">{{item.weekdayText}}</view>
           </view>
-          <view class="card-meta">{{item.timeText}}</view>
-          <view class="card-meta">{{item.placeText}}</view>
+          <view class="appointment-main">
+            <view class="appointment-time">{{item.clockText}}</view>
+            <view class="appointment-title">{{item.counselorText}}</view>
+            <view class="appointment-place">{{item.placeText}}</view>
+          </view>
+          <view class="status-side">
+            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+            <text class="detail-action">详情</text>
+          </view>
         </view>
       </view>
     </view>
 
-    <view class="section" wx:if="{{historyAppointments.length}}">
+    <view class="appointment-section history-section" wx:if="{{historyAppointments.length}}">
       <view class="section-head">
         <view class="section-title">历史记录</view>
         <view class="section-note">{{historyAppointments.length}} 条</view>
       </view>
-      <view class="card-list">
-        <view
-          wx:for="{{historyAppointments}}"
-          wx:key="appointmentId"
-          class="card appointment-card"
-          data-id="{{item.appointmentId}}"
-          bindtap="openDetail"
-        >
-          <view class="row">
-            <view class="card-title">{{item.counselorText}}</view>
-            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+      <view class="appointment-list">
+        <view wx:for="{{historyAppointments}}" wx:key="appointmentId" class="appointment-row history" data-id="{{item.appointmentId}}" bindtap="openDetail">
+          <view class="date-block">
+            <view class="date-main">{{item.monthDayText}}</view>
+            <view class="date-week">{{item.weekdayText}}</view>
           </view>
-          <view class="card-meta">{{item.timeText}}</view>
-          <view class="card-meta">{{item.placeText}}</view>
+          <view class="appointment-main">
+            <view class="appointment-time">{{item.clockText}}</view>
+            <view class="appointment-title">{{item.counselorText}}</view>
+            <view class="appointment-place">{{item.placeText}}</view>
+          </view>
+          <view class="status-side">
+            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+            <text wx:if="{{item.canRebook}}" class="rebook-link" data-counselor-id="{{item.counselorId}}" catchtap="rebookCounselor">再次预约</text>
+            <text wx:else class="detail-action">详情</text>
+          </view>
         </view>
       </view>
     </view>

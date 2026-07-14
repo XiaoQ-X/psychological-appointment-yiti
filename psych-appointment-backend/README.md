@@ -133,6 +133,7 @@ Example:
   "expectedHelp": "Understand pressure and plan next steps.",
   "urgencyLevel": "LOW",
   "contactTime": "weekday afternoon",
+  "consentVersionId": 1,
   "consentAgreed": true,
   "risk": {
     "selfHarm": false,
@@ -146,6 +147,14 @@ Example:
 ```
 
 Low/medium-risk appointments are confirmed immediately. High-risk submissions are stored with `RISK_REVIEW` status and the slot is still reserved for follow-up handling.
+
+The student appointment detail response includes `canCancel`, `minCancelHoursAhead`, and `cancelDeadline`. Clients should use these server-calculated fields to control cancellation availability instead of calculating the active rule locally.
+
+The latest published consent version is available without authentication:
+
+```text
+GET /api/public/consent/current
+```
 
 Cancel appointment endpoint:
 
@@ -334,7 +343,20 @@ Example:
 }
 ```
 
-Only the assigned counselor can complete the appointment. The appointment must be in `CONFIRMED` or `CHECKED_IN` status. Completion writes a submitted consultation note to `consultation_notes`, encrypting `topic`, `summary`, and `followUpPlan`, then marks the appointment as `COMPLETED`.
+Only the assigned counselor can complete the appointment. The appointment must have started and be in `CONFIRMED` or `CHECKED_IN` status. Completion writes a submitted consultation note to `consultation_notes`, encrypting `topic`, `summary`, and `followUpPlan`, then marks the appointment as `COMPLETED`.
+
+## Mark Student No-show
+
+Endpoint:
+
+```text
+POST /api/counselor/appointments/{appointmentId}/no-show
+Authorization: Bearer <counselorAccessToken>
+```
+
+Only the assigned counselor can mark an appointment as `NO_SHOW`. The appointment must be `CONFIRMED` and its end time must have passed. The operation increments the student's no-show count and writes an `APPOINTMENT_MARKED_NO_SHOW` sensitive audit log in the same transaction.
+
+Expired appointments are excluded from the student's active-appointment limit even before the counselor records the final `COMPLETED` or `NO_SHOW` outcome. The system does not automatically classify expired appointments as no-shows.
 
 ## Admin Appointment Management
 

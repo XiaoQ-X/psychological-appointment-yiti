@@ -1,0 +1,76 @@
+.login-page {
+  min-height: 100vh;
+  padding: 72rpx 32rpx 48rpx;
+  background-color: #f4f7f5;
+  background-image: linear-gradient(135deg, rgba(37, 92, 85, 0.06) 1px, transparent 1px),
+    linear-gradient(45deg, rgba(110, 145, 174, 0.04) 1px, transparent 1px);
+  background-size: 38rpx 38rpx;
+}
+
+.counselor-login-page {
+  padding-top: 64rpx;
+}
+
+.login-header {
+  margin-bottom: 28rpx;
+}
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  margin-bottom: 22rpx;
+}
+
+.brand-mark {
+  width: 88rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24rpx 24rpx 8rpx 24rpx;
+  background: #255c55;
+  color: #ffffff;
+  font-size: 40rpx;
+  font-weight: 800;
+  box-shadow: 8rpx 8rpx 0 #6e91ae;
+}
+
+.counselor-mark {
+  background: #255c55;
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+.brand-kicker {
+  color: #6e91ae;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin-bottom: 4rpx;
+}
+
+.login-panel {
+  padding: 28rpx;
+}
+
+.login-footer {
+  margin-top: 28rpx;
+  text-align: center;
+}
+
+.login-tip {
+  color: #667085;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 12rpx;
+  color: #216b62;
+  font-size: 24rpx;
+  margin-top: 16rpx;
+}

@@ -5,10 +5,17 @@ Page({
   data: {
     username: '',
     password: '',
+    passwordVisible: false,
+    passwordMode: true,
+    canSubmit: false,
     loading: false
   },
 
   onLoad() {
+    if (auth.getToken() && auth.requiresPasswordChange()) {
+      auth.openPasswordChange();
+      return;
+    }
     if (auth.getToken() && auth.getRole() === 'STUDENT') {
       wx.switchTab({ url: '/pages/student/counselors/index' });
       return;
@@ -19,14 +26,41 @@ Page({
   },
 
   onUsernameInput(event) {
-    this.setData({ username: event.detail.value.trim() });
+    const username = event.detail.value.trim();
+    this.setData({
+      username,
+      canSubmit: Boolean(username && this.data.password)
+    });
   },
 
   onPasswordInput(event) {
-    this.setData({ password: event.detail.value });
+    const password = event.detail.value;
+    this.setData({
+      password,
+      canSubmit: Boolean(this.data.username && password)
+    });
+  },
+
+  clearUsername() {
+    this.setData({ username: '', canSubmit: false });
+  },
+
+  togglePasswordVisibility() {
+    const passwordVisible = !this.data.passwordVisible;
+    this.setData({
+      passwordVisible,
+      passwordMode: !passwordVisible
+    });
+  },
+
+  onPasswordConfirm() {
+    this.submit();
   },
 
   submit() {
+    if (this.data.loading) {
+      return;
+    }
     if (!this.data.username || !this.data.password) {
       wx.showToast({ title: '请输入学号和密码', icon: 'none' });
       return;
@@ -44,6 +78,10 @@ Page({
       .then((data) => {
         auth.setSession(data);
         getApp().globalData.student = auth.getStudent();
+        if (data.forcePasswordChange) {
+          wx.redirectTo({ url: '/pages/password-change/index' });
+          return;
+        }
         wx.switchTab({ url: '/pages/student/counselors/index' });
       })
       .finally(() => {

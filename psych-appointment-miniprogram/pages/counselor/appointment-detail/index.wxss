@@ -1,31 +1,230 @@
-.status-card {
-  border-color: #c9e6df;
+page {
+  background: #f7faf9;
+  background-image: none;
 }
 
-.status-label {
-  color: #216b62;
-  font-size: 23rpx;
+.detail-page {
+  min-height: 100vh;
+  padding: 24rpx 28rpx 52rpx;
+  color: #15262b;
+  background: #f7faf9;
+}
+
+.detail-page.with-actions {
+  padding-bottom: 174rpx;
+}
+
+.status-head,
+.section-heading,
+.info-row,
+.issue-row,
+.bottom-actions {
+  display: flex;
+  align-items: center;
+}
+
+.status-band {
+  padding: 26rpx 22rpx 24rpx;
+  border-top: 4rpx solid #167a6e;
+  border-bottom: 1rpx solid #b8d5cf;
+  background: #edf6f4;
+}
+
+.status-head {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.status-kicker {
+  color: #167a6e;
+  font-size: 22rpx;
   font-weight: 700;
-  margin-bottom: 8rpx;
+}
+
+.student-name {
+  margin-top: 6rpx;
+  color: #15262b;
+  font-size: 38rpx;
+  font-weight: 800;
+}
+
+.status-tag,
+.risk-tag,
+.privacy-mark,
+.issue-tag {
+  flex-shrink: 0;
+  padding: 6rpx 11rpx;
+  border-radius: 4rpx;
+  color: #167a6e;
+  background: #dceeea;
+  font-size: 21rpx;
+  font-weight: 700;
+}
+
+.status-tag.warning,
+.risk-tag.warning {
+  color: #9a6518;
+  background: #fff4dd;
+}
+
+.status-tag.danger,
+.risk-tag.danger {
+  color: #b04439;
+  background: #fff1ee;
+}
+
+.status-tag.neutral,
+.risk-tag.neutral {
+  color: #52656a;
+  background: #f0f3f2;
+}
+
+.appointment-time {
+  margin-top: 18rpx;
+  color: #26393e;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.appointment-place {
+  margin-top: 6rpx;
+  color: #52656a;
+  font-size: 23rpx;
+}
+
+.detail-section {
+  margin-top: 30rpx;
+  background: #ffffff;
+}
+
+.section-heading {
+  justify-content: space-between;
+  gap: 18rpx;
+  min-height: 64rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid #d9e2e0;
+}
+
+.section-title {
+  color: #15262b;
+  font-size: 30rpx;
+  font-weight: 800;
+}
+
+.privacy-mark {
+  color: #52656a;
+  background: #f0f3f2;
+  font-weight: 600;
+}
+
+.info-row {
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 28rpx;
+  min-height: 72rpx;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #edf1f0;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.info-label {
+  flex-shrink: 0;
+  color: #748388;
+}
+
+.info-value {
+  min-width: 0;
+  color: #26393e;
+  text-align: right;
+}
+
+.number-value {
+  word-break: break-all;
+}
+
+.profile-row .info-value {
+  max-width: 76%;
 }
 
 .issue-row {
-  display: flex;
   flex-wrap: wrap;
   gap: 10rpx;
-  margin-top: 18rpx;
+  padding: 18rpx 0 4rpx;
 }
 
-.chip {
-  padding: 8rpx 14rpx;
-  border-radius: 8rpx;
-  color: #344054;
-  background: #f2f4f7;
-  font-size: 22rpx;
+.issue-tag {
+  color: #52656a;
+  background: #f0f3f2;
+  font-weight: 600;
+}
+
+.cancel-section {
+  padding: 20rpx;
+  border-left: 5rpx solid #e85a47;
+  background: #fff1ee;
 }
 
 .reason-text {
-  color: #344054;
-  font-size: 26rpx;
+  margin-top: 12rpx;
+  color: #815a55;
+  font-size: 24rpx;
   line-height: 1.6;
+}
+
+.bottom-actions {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  gap: 14rpx;
+  padding: 18rpx 28rpx calc(18rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #d9e2e0;
+  background: rgba(255, 255, 255, 0.97);
+}
+
+.primary-action,
+.no-show-action {
+  min-height: 88rpx;
+  margin: 0;
+  border-radius: 8rpx;
+  font-size: 27rpx;
+  font-weight: 700;
+}
+
+.primary-action {
+  flex: 1;
+  color: #ffffff;
+  background: #167a6e;
+}
+
+.no-show-action {
+  width: 210rpx;
+  color: #b04439;
+  background: #fff1ee;
+  border: 1rpx solid #eab4ad;
+}
+
+.primary-action::after,
+.no-show-action::after {
+  border: 0;
+}
+
+.empty-state {
+  padding: 100rpx 30rpx;
+  text-align: center;
+}
+
+.empty-title {
+  color: #26393e;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.empty-text {
+  margin-top: 10rpx;
+  color: #748388;
+  font-size: 23rpx;
 }

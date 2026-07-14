@@ -1,0 +1,53 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="empty">正在加载详情</view>
+
+  <view wx:else>
+    <view class="panel status-card">
+      <view class="row">
+        <view>
+          <view class="status-label">预约状态</view>
+          <view class="card-title">{{detail.studentText}}</view>
+          <view class="card-meta">{{detail.timeText}}</view>
+        </view>
+        <text class="tag {{detail.tagType}}">{{detail.statusText}}</text>
+      </view>
+      <view class="divider"></view>
+      <view class="info-row"><text>预约号</text><text>{{detail.appointmentNo}}</text></view>
+      <view class="info-row"><text>地点</text><text>{{detail.placeText}}</text></view>
+      <view class="info-row"><text>服务类型</text><text>{{detail.serviceTypeText}}</text></view>
+      <view class="info-row"><text>风险等级</text><text class="tag {{detail.riskTagType}}">{{detail.riskLevelText}}</text></view>
+    </view>
+
+    <view class="panel section">
+      <view class="section-title">学生信息</view>
+      <view class="info-row"><text>学号</text><text>{{detail.studentNoText}}</text></view>
+      <view class="info-row"><text>学生画像</text><text>{{detail.studentProfileText}}</text></view>
+    </view>
+
+    <view class="panel section">
+      <view class="section-title">预约表单</view>
+      <view class="info-row"><text>首次咨询</text><text>{{detail.firstVisitText}}</text></view>
+      <view class="info-row"><text>紧急程度</text><text>{{detail.urgencyText}}</text></view>
+      <view class="info-row"><text>方便联系</text><text>{{detail.contactTimeText}}</text></view>
+      <view class="issue-row" wx:if="{{detail.hasIssueTypes}}">
+        <text wx:for="{{detail.issueTypes}}" wx:key="*this" class="chip">{{item}}</text>
+      </view>
+    </view>
+
+    <view class="panel section" wx:if="{{detail.cancelReason}}">
+      <view class="section-title">取消原因</view>
+      <view class="reason-text">{{detail.cancelReason}}</view>
+    </view>
+
+    <view class="button-stack" wx:if="{{canComplete}}">
+      <button class="primary-button" bindtap="openCompleteForm">完成咨询并填写记录</button>
+      <button
+        wx:if="{{canMarkNoShow}}"
+        class="no-show-button"
+        loading="{{markingNoShow}}"
+        disabled="{{markingNoShow}}"
+        bindtap="markNoShow"
+      >标记学生未到访</button>
+    </view>
+  </view>
+</view>

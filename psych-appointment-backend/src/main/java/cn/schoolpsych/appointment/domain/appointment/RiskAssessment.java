@@ -39,6 +39,12 @@ public class RiskAssessment extends BaseEntity {
     @Column(name = "willing_contact", nullable = false)
     private boolean willingContact;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Column(name = "answers_encrypted", nullable = false)
+    private byte[] answersEncrypted;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "risk_level", nullable = false, length = 32)
     private RiskLevel riskLevel;
@@ -56,6 +62,12 @@ public class RiskAssessment extends BaseEntity {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Column(name = "review_metadata_encrypted")
+    private byte[] reviewMetadataEncrypted;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
     @Column(name = "handling_notes_encrypted")
     private byte[] handlingNotesEncrypted;
 
@@ -64,31 +76,25 @@ public class RiskAssessment extends BaseEntity {
 
     public static RiskAssessment create(
             Long appointmentId,
-            boolean selfHarm,
-            boolean harmOthers,
-            boolean crisisEvent,
-            boolean psychiatricTreatment,
-            boolean medication,
-            boolean willingContact,
+            byte[] answersEncrypted,
             RiskLevel riskLevel) {
         RiskAssessment assessment = new RiskAssessment();
         assessment.appointmentId = appointmentId;
-        assessment.selfHarm = selfHarm;
-        assessment.harmOthers = harmOthers;
-        assessment.crisisEvent = crisisEvent;
-        assessment.psychiatricTreatment = psychiatricTreatment;
-        assessment.medication = medication;
-        assessment.willingContact = willingContact;
+        assessment.answersEncrypted = answersEncrypted;
         assessment.riskLevel = riskLevel;
         assessment.reviewStatus = riskLevel == RiskLevel.HIGH ? RiskReviewStatus.PENDING : RiskReviewStatus.NONE;
         return assessment;
     }
 
-    public void review(RiskReviewStatus reviewStatus, Long reviewerAccountId, byte[] handlingNotesEncrypted) {
+    public void review(
+            RiskReviewStatus reviewStatus,
+            byte[] handlingNotesEncrypted,
+            byte[] reviewMetadataEncrypted) {
         this.reviewStatus = reviewStatus;
-        this.reviewedBy = reviewerAccountId;
-        this.reviewedAt = LocalDateTime.now();
+        this.reviewedBy = null;
+        this.reviewedAt = null;
         this.handlingNotesEncrypted = handlingNotesEncrypted;
+        this.reviewMetadataEncrypted = reviewMetadataEncrypted;
     }
 
     public Long getAppointmentId() {
@@ -119,6 +125,10 @@ public class RiskAssessment extends BaseEntity {
         return willingContact;
     }
 
+    public byte[] getAnswersEncrypted() {
+        return answersEncrypted;
+    }
+
     public RiskLevel getRiskLevel() {
         return riskLevel;
     }
@@ -133,5 +143,29 @@ public class RiskAssessment extends BaseEntity {
 
     public LocalDateTime getReviewedAt() {
         return reviewedAt;
+    }
+
+    public byte[] getReviewMetadataEncrypted() {
+        return reviewMetadataEncrypted;
+    }
+
+    public void migrateAnswers(byte[] encryptedAnswers) {
+        if (this.answersEncrypted == null && encryptedAnswers != null) {
+            this.answersEncrypted = encryptedAnswers;
+            this.selfHarm = false;
+            this.harmOthers = false;
+            this.crisisEvent = false;
+            this.psychiatricTreatment = false;
+            this.medication = false;
+            this.willingContact = false;
+        }
+    }
+
+    public void migrateReviewMetadata(byte[] encryptedMetadata) {
+        if (this.reviewMetadataEncrypted == null && encryptedMetadata != null) {
+            this.reviewMetadataEncrypted = encryptedMetadata;
+            this.reviewedBy = null;
+            this.reviewedAt = null;
+        }
     }
 }

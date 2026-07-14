@@ -1,35 +1,39 @@
-<view class="login-page counselor-login-page">
-  <view class="login-header">
-    <view class="brand-row">
-      <view class="brand-mark counselor-mark">师</view>
-      <view class="brand-copy">
-        <view class="brand-kicker">咨询师工作台</view>
-        <view class="page-title">咨询预约管理</view>
-      </view>
+<view class="counselor-login-page">
+  <view class="brand-bar">
+    <view class="brand-lockup">
+      <text class="brand-name">校园节奏</text>
+      <view class="brand-divider"></view>
+      <text class="brand-product">咨询师工作台</text>
     </view>
-    <view class="page-subtitle">使用学校后台创建的咨询师账号登录，查看自己的预约并填写咨询记录。</view>
+    <text class="role-mark">校内专用</text>
   </view>
 
-  <view class="panel login-panel">
+  <view class="welcome-block">
+    <view class="welcome-kicker">COUNSELOR WORKSPACE</view>
+    <view class="welcome-title">欢迎回来</view>
+    <view class="welcome-text">查看今日预约，完成咨询记录与风险跟进。</view>
+    <image class="welcome-art" src="/assets/design/breathing-lines.png" mode="aspectFit" aria-hidden="true" />
+  </view>
+
+  <view class="login-form">
+    <view class="form-heading">账号登录</view>
+    <view class="form-note">使用学校管理端分配的咨询师账号</view>
+
     <view class="field">
       <text class="field-label">账号</text>
-      <input class="input" value="{{username}}" placeholder="请输入咨询师账号" bindinput="onUsernameInput" />
+      <input class="login-input" value="{{username}}" placeholder="请输入咨询师账号" placeholder-class="input-placeholder" bindinput="onUsernameInput" />
     </view>
 
     <view class="field">
       <text class="field-label">密码</text>
-      <input class="input" value="{{password}}" password placeholder="请输入密码" bindinput="onPasswordInput" />
+      <input class="login-input" value="{{password}}" password placeholder="请输入密码" placeholder-class="input-placeholder" bindinput="onPasswordInput" />
     </view>
 
-    <view class="button-stack">
-      <button class="primary-button" loading="{{loading}}" disabled="{{loading}}" bindtap="submit">登录工作台</button>
-    </view>
+    <button class="login-button" loading="{{loading}}" disabled="{{loading}}" bindtap="submit">登录工作台</button>
   </view>
 
   <view class="login-footer">
-    <view class="login-tip">账号由后台管理员创建和维护。</view>
-    <view class="footer-links">
-      <text bindtap="openStudentLogin">学生入口</text>
-    </view>
+    <text class="account-note">账号问题请联系心理中心管理员</text>
+    <text class="student-link" bindtap="openStudentLogin">返回学生入口</text>
   </view>
 </view>

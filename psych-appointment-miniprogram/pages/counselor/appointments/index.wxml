@@ -1,23 +1,36 @@
-<view class="page">
-  <view class="row page-head">
+<view class="counselor-page">
+  <view class="brand-bar">
+    <view class="brand-lockup">
+      <text class="brand-name">校园节奏</text>
+      <view class="brand-divider"></view>
+      <text class="brand-product">咨询师工作台</text>
+    </view>
+    <button class="logout-button" bindtap="logout">退出</button>
+  </view>
+
+  <view class="workspace-head">
     <view>
-      <view class="page-title">我的咨询预约</view>
-      <view class="page-subtitle">查看分配给自己的预约，进入详情后可填写咨询记录。</view>
+      <view class="welcome-label">你好，{{counselor.counselorName}}</view>
+      <view class="workspace-title">预约工作台</view>
+      <view class="workspace-note">按时间处理预约，及时完成咨询记录。</view>
     </view>
-    <button class="ghost-button" bindtap="logout">退出</button>
+    <view class="role-badge">咨询师</view>
   </view>
 
-  <view class="panel counselor-card">
-    <view class="row">
-      <view>
-        <view class="section-title">{{counselor.counselorName}}</view>
-        <view class="card-meta">{{counselor.username}}</view>
-      </view>
-      <text class="tag">咨询师</text>
+  <view class="summary-band">
+    <view class="summary-item">
+      <view class="summary-number">{{currentAppointments.length}}</view>
+      <view class="summary-label">当前待处理</view>
     </view>
+    <view class="summary-divider"></view>
+    <view class="summary-item">
+      <view class="summary-number muted-number">{{historyAppointments.length}}</view>
+      <view class="summary-label">历史记录</view>
+    </view>
+    <view class="summary-account">{{counselor.username}}</view>
   </view>
 
-  <scroll-view class="filter-scroll" scroll-x>
+  <scroll-view class="filter-scroll" scroll-x enhanced show-scrollbar="false">
     <view class="filter-row">
       <view
         wx:for="{{filters}}"
@@ -25,67 +38,69 @@
         class="filter-chip {{item.activeClass}}"
         data-value="{{item.value}}"
         bindtap="changeFilter"
-      >
-        {{item.label}}
-      </view>
+      >{{item.label}}</view>
     </view>
   </scroll-view>
 
-  <view wx:if="{{loading}}" class="empty">正在加载预约</view>
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-title">正在同步预约</view>
+    <view class="empty-text">请稍候，正在获取最新安排。</view>
+  </view>
 
-  <view wx:elif="{{appointments.length == 0}}" class="empty">
-    暂无预约记录
+  <view wx:elif="{{appointments.length == 0}}" class="empty-state">
+    <view class="empty-title">当前筛选下暂无预约</view>
+    <view class="empty-text">下拉刷新可重新同步预约状态。</view>
   </view>
 
   <view wx:else>
-    <view class="section" wx:if="{{currentAppointments.length}}">
-      <view class="section-head">
-        <view class="section-title">当前待处理</view>
-        <view class="section-note">{{currentAppointments.length}} 条</view>
+    <view class="appointment-section" wx:if="{{currentAppointments.length}}">
+      <view class="section-heading">
+        <view>
+          <view class="section-title">当前待处理</view>
+          <view class="section-note">优先处理临近预约与风险状态</view>
+        </view>
+        <view class="section-count">{{currentAppointments.length}} 条</view>
       </view>
-      <view class="card-list">
-        <view
-          wx:for="{{currentAppointments}}"
-          wx:key="appointmentId"
-          class="card appointment-card current"
-          data-id="{{item.appointmentId}}"
-          bindtap="openDetail"
-        >
-          <view class="row">
-            <view class="card-title">{{item.studentText}}</view>
-            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+      <view class="appointment-list">
+        <view wx:for="{{currentAppointments}}" wx:key="appointmentId" class="appointment-row current" data-id="{{item.appointmentId}}" bindtap="openDetail">
+          <view class="row-main">
+            <view class="student-line">
+              <view class="student-name">{{item.studentText}}</view>
+              <text class="status-tag {{item.tagType}}">{{item.statusText}}</text>
+            </view>
+            <view class="appointment-time">{{item.timeText}}</view>
+            <view class="appointment-meta">{{item.studentMeta}}</view>
+            <view class="appointment-meta">{{item.placeText}} · {{item.serviceTypeText}}</view>
+            <view class="tag-row">
+              <text class="risk-tag {{item.riskTagType}}">{{item.riskText}}</text>
+              <text wx:if="{{item.canComplete}}" class="record-ready">可填写记录</text>
+            </view>
           </view>
-          <view class="card-meta">{{item.studentMeta}}</view>
-          <view class="card-meta">{{item.timeText}}</view>
-          <view class="card-meta">{{item.placeText}} · {{item.serviceTypeText}}</view>
-          <view class="tag-row">
-            <text class="tag {{item.riskTagType}}">{{item.riskText}}</text>
-            <text wx:if="{{item.canComplete}}" class="tag">可完成记录</text>
-          </view>
+          <text class="row-action">详情</text>
         </view>
       </view>
     </view>
 
-    <view class="section" wx:if="{{historyAppointments.length}}">
-      <view class="section-head">
-        <view class="section-title">历史记录</view>
-        <view class="section-note">{{historyAppointments.length}} 条</view>
+    <view class="appointment-section history-section" wx:if="{{historyAppointments.length}}">
+      <view class="section-heading">
+        <view>
+          <view class="section-title">历史记录</view>
+          <view class="section-note">已完成、已取消及未到访记录</view>
+        </view>
+        <view class="section-count">{{historyAppointments.length}} 条</view>
       </view>
-      <view class="card-list">
-        <view
-          wx:for="{{historyAppointments}}"
-          wx:key="appointmentId"
-          class="card appointment-card"
-          data-id="{{item.appointmentId}}"
-          bindtap="openDetail"
-        >
-          <view class="row">
-            <view class="card-title">{{item.studentText}}</view>
-            <text class="tag {{item.tagType}}">{{item.statusText}}</text>
+      <view class="appointment-list">
+        <view wx:for="{{historyAppointments}}" wx:key="appointmentId" class="appointment-row" data-id="{{item.appointmentId}}" bindtap="openDetail">
+          <view class="row-main">
+            <view class="student-line">
+              <view class="student-name">{{item.studentText}}</view>
+              <text class="status-tag {{item.tagType}}">{{item.statusText}}</text>
+            </view>
+            <view class="appointment-time">{{item.timeText}}</view>
+            <view class="appointment-meta">{{item.studentMeta}}</view>
+            <view class="appointment-meta">{{item.placeText}}</view>
           </view>
-          <view class="card-meta">{{item.studentMeta}}</view>
-          <view class="card-meta">{{item.timeText}}</view>
-          <view class="card-meta">{{item.placeText}}</view>
+          <text class="row-action">详情</text>
         </view>
       </view>
     </view>

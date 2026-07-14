@@ -1,24 +1,64 @@
-<view class="page">
-  <view class="panel emergency-hero">
-    <view class="page-title">紧急求助</view>
-    <view class="emergency-copy">若当前情况非常紧急，请立即联系线下人员或拨打紧急电话。线上预约不能替代即时危机处理。</view>
-  </view>
-
-  <view class="section card-list">
-    <view wx:for="{{contacts}}" wx:key="title" class="card contact-card">
-      <view class="row">
-        <view>
-          <view class="card-title">{{item.title}}</view>
-          <view class="card-meta">{{item.desc}}</view>
-        </view>
-        <button class="call-button" data-phone="{{item.phone}}" bindtap="callPhone">拨打</button>
-      </view>
-      <view class="phone-text">{{item.phone}}</view>
+<view class="page emergency-page">
+  <view class="emergency-hero">
+    <view class="warning-mark"><icon type="warn" size="46" color="#e85a47" /></view>
+    <view class="hero-copy">
+      <view class="hero-title">先保证此刻安全</view>
+      <view class="hero-text">若你或他人可能立即受到伤害，请直接拨打紧急电话。线上预约不能替代即时危机处理。</view>
     </view>
   </view>
 
-  <view class="panel section note-panel">
-    <view class="section-title">提示</view>
-    <view class="emergency-copy">如果你已经提交预约并进入待审核状态，心理中心会优先处理。等待期间如情况变化，请优先使用本页联系方式。</view>
+  <view class="immediate-section">
+    <view class="section-title">立即危险</view>
+    <view class="immediate-grid">
+      <view wx:for="{{immediateContacts}}" wx:key="phone" class="immediate-item">
+        <view class="danger-icon"><icon type="warn" size="34" color="#ffffff" /></view>
+        <view class="call-label">{{item.title}}</view>
+        <view class="call-number">{{item.phone}}</view>
+        <view class="call-desc">{{item.desc}}</view>
+        <button class="danger-call-button" data-phone="{{item.phone}}" bindtap="callPhone">立即拨打</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="support-section">
+    <view class="section-title">心理支持</view>
+    <view class="hotline-row">
+      <view class="hotline-mark"><icon type="info" size="30" color="#167a6e" /></view>
+      <view class="hotline-number">{{psychologicalHotline.phone}}</view>
+      <view class="hotline-copy">
+        <view class="hotline-title">{{psychologicalHotline.title}}</view>
+        <view class="hotline-desc">{{psychologicalHotline.desc}}</view>
+      </view>
+      <button class="hotline-button" data-phone="{{psychologicalHotline.phone}}" bindtap="callPhone">拨打</button>
+    </view>
+  </view>
+
+  <view class="school-section" wx:if="{{hasSchoolContacts}}">
+    <view class="section-title">校内支持</view>
+    <view class="school-list">
+      <view wx:for="{{schoolContacts}}" wx:key="title" class="school-row">
+        <view class="school-main">
+          <view class="school-title">{{item.title}}</view>
+          <view class="school-desc">{{item.desc}}</view>
+          <view class="school-phone">{{item.phoneText}}</view>
+        </view>
+        <button class="school-call-button" data-phone="{{item.phone}}" bindtap="callPhone">{{item.actionText}}</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="safety-section">
+    <view class="section-title">等待援助时</view>
+    <view class="safety-list">
+      <view wx:for="{{safetySteps}}" wx:key="*this" class="safety-row">
+        <view class="safety-number">{{index + 1}}</view>
+        <view class="safety-text">{{item}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-note">
+    <icon type="info" size="20" color="#167a6e" />
+    <text>心理援助热线不替代 110、120 等紧急救援服务。</text>
   </view>
 </view>

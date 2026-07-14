@@ -1,0 +1,116 @@
+<view class="page counselors-home">
+  <view class="brand-row">
+    <view class="brand-name">心理预约</view>
+    <button class="ghost-button logout-button" bindtap="logout">退出</button>
+  </view>
+  <view class="brand-motto">温暖陪伴 · 用心倾听</view>
+
+  <view class="hero-copy">
+    <view class="hero-title">选择合适的咨询支持</view>
+    <view class="hero-subtitle">查看咨询师信息和可预约时间，按自己的节奏开始。</view>
+  </view>
+
+  <image
+    class="breathing-art"
+    src="../../../assets/design/breathing-lines.png"
+    mode="aspectFit"
+    aria-hidden="true"
+  />
+
+  <view class="panel next-panel" bindtap="openNextAppointment">
+    <view class="next-heading-row">
+      <view class="next-label"><text class="calendar-mark">预约</text> 下次预约</view>
+      <text class="arrow-mark">›</text>
+    </view>
+    <view class="next-content" wx:if="{{nextAppointment}}">
+      <view class="next-main">
+        <view class="next-title">{{nextAppointment.counselorText}}</view>
+        <view class="next-meta">{{nextAppointment.timeText}}</view>
+        <view class="next-meta">{{nextAppointment.placeText}}</view>
+      </view>
+      <text class="tag {{nextAppointment.tagType}}">{{nextAppointment.statusText}}</text>
+    </view>
+    <view wx:else class="next-empty">完成预约后，可在这里快速查看时间、地点和状态。</view>
+  </view>
+
+  <view class="primary-entry {{nextAppointment ? 'secondary-entry' : ''}}" bindtap="openCounselorPicker">
+    <view class="primary-entry-icon"><icon type="search" size="28" color="#ffffff" /></view>
+    <view class="primary-entry-copy">
+      <view class="primary-entry-title">{{nextAppointment ? '浏览其他咨询师' : '选择咨询师'}}</view>
+      <view class="primary-entry-text">查看专业方向、校区和最近可约时间</view>
+    </view>
+    <text class="primary-entry-arrow">›</text>
+  </view>
+
+  <view class="section-heading" id="counselor-list">
+    <view class="section-title">咨询师推荐</view>
+    <view class="section-link">按最近可约时间排序</view>
+  </view>
+
+  <scroll-view class="filter-scroll" scroll-x>
+    <view class="filter-row">
+      <view
+        wx:for="{{filterChips}}"
+        wx:key="value"
+        class="filter-chip {{item.activeClass}}"
+        data-value="{{item.value}}"
+        bindtap="changeFilter"
+      >
+        {{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{loading}}" class="empty">正在加载咨询师</view>
+
+  <view wx:elif="{{counselors.length == 0}}" class="empty">
+    <view>{{activeFilter == 'ALL' ? '暂无咨询师信息，请稍后再试。' : '当前筛选下没有匹配的咨询师。'}}</view>
+    <button wx:if="{{activeFilter != 'ALL'}}" class="reset-filter-button" bindtap="resetFilter">查看全部咨询师</button>
+  </view>
+
+  <view wx:else class="counselor-list">
+    <view
+      wx:for="{{counselors}}"
+      wx:key="id"
+      class="counselor-row"
+      data-id="{{item.id}}"
+      bindtap="openDetail"
+    >
+      <image wx:if="{{item.avatarUrl}}" class="counselor-avatar counselor-photo" src="{{item.avatarUrl}}" mode="aspectFill" />
+      <view wx:else class="counselor-avatar counselor-avatar-fallback"><text>校</text></view>
+      <view class="counselor-main">
+        <view class="counselor-name-row">
+          <view class="card-title">{{item.name}}</view>
+          <view class="verified-mark">校内认证</view>
+        </view>
+        <view class="counselor-title">{{item.titleText}}</view>
+        <view class="card-meta availability {{item.hasAvailableSlots ? '' : 'unavailable'}}">{{item.campusText}} · {{item.availabilityText}}</view>
+        <view class="expertise-row" wx:if="{{item.expertise.length}}">
+          <text wx:for="{{item.expertise}}" wx:key="*this" class="chip">{{item}}</text>
+        </view>
+        <view class="card-meta" wx:if="{{item.nextAvailableText}}">最近可约：{{item.nextAvailableText}}</view>
+        <view class="card-meta unavailable" wx:else>可下拉刷新或稍后再次查看</view>
+      </view>
+      <text class="row-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="utility-grid">
+    <view class="utility-card emergency-card" bindtap="openEmergency">
+      <icon type="warn" size="26" color="#e97d6e" />
+      <view class="utility-copy">
+        <view class="quick-title">紧急求助</view>
+        <view class="quick-text">无需登录也可查看</view>
+      </view>
+      <text class="utility-arrow">›</text>
+    </view>
+    <view class="utility-card" bindtap="openConsent">
+      <icon type="info" size="26" color="#7b9476" />
+      <view class="utility-copy">
+        <view class="quick-title">服务须知</view>
+        <view class="quick-text">保密原则与取消规则</view>
+      </view>
+      <text class="utility-arrow">›</text>
+    </view>
+  </view>
+</view>

@@ -22,8 +22,14 @@ public class AppointmentForm extends BaseEntity {
     @Column(name = "first_visit", nullable = false)
     private boolean firstVisit;
 
-    @Column(name = "issue_types_json", nullable = false, columnDefinition = "json")
+    @Column(name = "issue_types_json", columnDefinition = "json")
     private String issueTypesJson;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Column(name = "metadata_encrypted", nullable = false)
+    private byte[] metadataEncrypted;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
@@ -38,7 +44,7 @@ public class AppointmentForm extends BaseEntity {
     private byte[] expectedHelpEncrypted;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "urgency_level", nullable = false, length = 32)
+    @Column(name = "urgency_level", length = 32)
     private RiskLevel urgencyLevel;
 
     @Column(name = "contact_time", length = 255)
@@ -50,19 +56,15 @@ public class AppointmentForm extends BaseEntity {
     public static AppointmentForm create(
             Long appointmentId,
             boolean firstVisit,
-            String issueTypesJson,
+            byte[] metadataEncrypted,
             byte[] descriptionEncrypted,
-            byte[] expectedHelpEncrypted,
-            RiskLevel urgencyLevel,
-            String contactTime) {
+            byte[] expectedHelpEncrypted) {
         AppointmentForm form = new AppointmentForm();
         form.appointmentId = appointmentId;
         form.firstVisit = firstVisit;
-        form.issueTypesJson = issueTypesJson;
+        form.metadataEncrypted = metadataEncrypted;
         form.descriptionEncrypted = descriptionEncrypted;
         form.expectedHelpEncrypted = expectedHelpEncrypted;
-        form.urgencyLevel = urgencyLevel;
-        form.contactTime = contactTime;
         return form;
     }
 
@@ -74,15 +76,28 @@ public class AppointmentForm extends BaseEntity {
         return firstVisit;
     }
 
-    public String getIssueTypesJson() {
+    public byte[] getMetadataEncrypted() {
+        return metadataEncrypted;
+    }
+
+    public String getLegacyIssueTypesJson() {
         return issueTypesJson;
     }
 
-    public RiskLevel getUrgencyLevel() {
+    public RiskLevel getLegacyUrgencyLevel() {
         return urgencyLevel;
     }
 
-    public String getContactTime() {
+    public String getLegacyContactTime() {
         return contactTime;
+    }
+
+    public void migrateMetadata(byte[] encryptedMetadata) {
+        if (this.metadataEncrypted == null && encryptedMetadata != null) {
+            this.metadataEncrypted = encryptedMetadata;
+            this.issueTypesJson = null;
+            this.urgencyLevel = null;
+            this.contactTime = null;
+        }
     }
 }

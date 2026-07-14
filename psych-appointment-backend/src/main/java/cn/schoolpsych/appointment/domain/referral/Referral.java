@@ -29,8 +29,14 @@ public class Referral extends BaseEntity {
     @Column(name = "referral_type", nullable = false, length = 32)
     private ReferralType referralType;
 
-    @Column(name = "destination", nullable = false, length = 255)
+    @Column(name = "destination", length = 255)
     private String destination;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @JdbcTypeCode(SqlTypes.LONGVARBINARY)
+    @Column(name = "destination_encrypted", nullable = false)
+    private byte[] destinationEncrypted;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
@@ -50,14 +56,14 @@ public class Referral extends BaseEntity {
             Long studentId,
             Long counselorId,
             ReferralType referralType,
-            String destination,
+            byte[] destinationEncrypted,
             byte[] reasonEncrypted) {
         Referral referral = new Referral();
         referral.appointmentId = appointmentId;
         referral.studentId = studentId;
         referral.counselorId = counselorId;
         referral.referralType = referralType;
-        referral.destination = destination;
+        referral.destinationEncrypted = destinationEncrypted;
         referral.reasonEncrypted = reasonEncrypted;
         referral.status = ReferralStatus.OPEN;
         return referral;
@@ -79,11 +85,22 @@ public class Referral extends BaseEntity {
         return referralType;
     }
 
-    public String getDestination() {
+    public String getLegacyDestination() {
         return destination;
+    }
+
+    public byte[] getDestinationEncrypted() {
+        return destinationEncrypted;
     }
 
     public ReferralStatus getStatus() {
         return status;
+    }
+
+    public void migrateDestination(byte[] encryptedDestination) {
+        if (this.destinationEncrypted == null && encryptedDestination != null) {
+            this.destinationEncrypted = encryptedDestination;
+            this.destination = null;
+        }
     }
 }

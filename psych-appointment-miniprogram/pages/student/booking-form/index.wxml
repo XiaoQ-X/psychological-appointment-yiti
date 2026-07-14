@@ -1,84 +1,96 @@
-<view class="page with-bottom-action">
-  <view class="page-head">
-    <view class="page-title">填写预约信息</view>
-    <view class="page-subtitle">信息仅用于本次咨询安排和必要风险处理。</view>
+<view class="page with-bottom-action booking-page">
+  <view class="booking-summary">
+    <view class="summary-accent"></view>
+    <view class="summary-topline">
+      <view class="summary-counselor">{{counselorName}}</view>
+      <view class="summary-state">已选时段</view>
+    </view>
+    <view class="summary-time">{{slotTime}}</view>
+    <view class="summary-place" wx:if="{{placeText}}">{{placeText}}</view>
   </view>
 
-  <view class="panel summary-panel">
-    <view class="summary-label">已选咨询</view>
-    <view class="card-title">{{counselorName}}</view>
-    <view class="card-meta">{{slotTime}}</view>
+  <view class="form-section first-section">
+    <view class="field-heading"><text>是否首次咨询</text><text class="required-text">必填</text></view>
+    <radio-group class="first-visit-row" bindchange="onFirstVisitChange">
+      <label class="radio-choice"><radio value="true" checked="{{firstVisit}}" color="#167a6e" />是</label>
+      <label class="radio-choice"><radio value="false" checked="{{!firstVisit}}" color="#167a6e" />否</label>
+    </radio-group>
   </view>
 
-  <view class="panel section">
-    <view class="field">
-      <text class="field-label">是否首次咨询</text>
-      <radio-group class="choice-row" bindchange="onFirstVisitChange">
-        <label class="choice"><radio value="true" checked="{{firstVisit}}" />是</label>
-        <label class="choice"><radio value="false" checked="{{!firstVisit}}" />否</label>
-      </radio-group>
-    </view>
-
-    <view class="field">
-      <text class="field-label">主要困扰</text>
-      <checkbox-group class="choice-wrap" bindchange="onIssueChange">
-        <label wx:for="{{issueOptions}}" wx:key="value" class="choice chip-choice">
-          <checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.label}}
-        </label>
-      </checkbox-group>
-    </view>
-
-    <view class="field">
-      <text class="field-label">情况说明</text>
-      <textarea class="textarea" maxlength="1000" placeholder="简要描述当前困扰和希望咨询师了解的背景" value="{{description}}" bindinput="onDescriptionInput" />
-    </view>
-
-    <view class="field">
-      <text class="field-label">期待获得的帮助</text>
-      <textarea class="textarea" maxlength="1000" placeholder="例如：梳理压力来源、制定调整计划" value="{{expectedHelp}}" bindinput="onExpectedHelpInput" />
-    </view>
-
-    <view class="field">
-      <text class="field-label">紧急程度</text>
-      <picker mode="selector" range="{{urgencyLabels}}" value="{{urgencyIndex}}" bindchange="onUrgencyChange">
-        <view class="input picker-text">{{urgencyLabels[urgencyIndex]}}</view>
-      </picker>
-    </view>
-
-    <view class="field">
-      <text class="field-label">方便联系时间</text>
-      <input class="input" placeholder="如：工作日下午" value="{{contactTime}}" bindinput="onContactTimeInput" />
-    </view>
-  </view>
-
-  <view class="panel section">
-    <view class="section-head">
-      <view class="field-label">风险筛查</view>
-      <view class="inline-link" bindtap="openEmergency">紧急求助</view>
-    </view>
-    <view class="risk-desc">如近期出现以下情况，请如实勾选。系统会帮助心理中心优先处理。</view>
-    <checkbox-group class="risk-list" bindchange="onRiskChange">
-      <label wx:for="{{riskOptions}}" wx:key="value" class="risk-item">
-        <checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.label}}
+  <view class="form-section">
+    <view class="field-heading"><text>主要困扰</text><text class="required-text">必填</text></view>
+    <checkbox-group class="issue-grid" bindchange="onIssueChange">
+      <label wx:for="{{issueOptions}}" wx:key="value" class="issue-choice {{item.selectedClass}}">
+        <checkbox value="{{item.value}}" checked="{{item.selectedClass == 'selected'}}" color="#167a6e" />
+        <text>{{item.label}}</text>
       </label>
     </checkbox-group>
-    <view wx:if="{{hasHighRisk}}" class="risk-warning">
-      你提交后将进入优先审核流程。若当前情况紧急，请立即联系线下人员或拨打紧急电话。
+  </view>
+
+  <view class="form-section">
+    <view class="field-heading"><text>情况说明</text><text class="required-text">必填</text></view>
+    <view class="textarea-shell">
+      <textarea
+        class="description-input"
+        maxlength="300"
+        placeholder="简要描述当前困扰和希望咨询师了解的背景"
+        value="{{description}}"
+        bindinput="onDescriptionInput"
+      />
+      <view class="input-counter">{{descriptionLength}}/300</view>
     </view>
   </view>
 
-  <view class="panel section">
-    <view class="consent-row">
-      <checkbox checked="{{consentAgreed}}" bindtap="toggleConsent" />
-      <view class="consent-copy">
-        <text>我已阅读并同意</text>
-        <text class="inline-link" bindtap="openConsent">心理咨询知情同意说明</text>
-        <text>，确认提交的信息真实有效。</text>
+  <view class="form-section">
+    <view class="field-heading"><text>希望获得的帮助</text><text class="optional-text">选填</text></view>
+    <input
+      class="text-input"
+      maxlength="300"
+      placeholder="例如：学习时间管理和压力缓解技巧"
+      value="{{expectedHelp}}"
+      bindinput="onExpectedHelpInput"
+    />
+  </view>
+
+  <view class="form-section safety-section">
+    <view class="safety-title-row">
+      <view>
+        <view class="field-heading"><text>安全评估</text></view>
+        <view class="section-note">为保障你的安全，请如实回答</view>
+      </view>
+      <view class="learn-link" bindtap="openEmergency">了解更多</view>
+    </view>
+    <view class="risk-list">
+      <view wx:for="{{riskQuestions}}" wx:key="value" class="risk-question">
+        <view class="risk-label">{{item.label}}</view>
+        <radio-group class="risk-answer" data-value="{{item.value}}" bindchange="onRiskAnswerChange">
+          <label class="risk-option"><radio value="true" checked="{{item.answer}}" color="#167a6e" />是</label>
+          <label class="risk-option"><radio value="false" checked="{{!item.answer}}" color="#167a6e" />否</label>
+        </radio-group>
       </view>
     </view>
+    <view wx:if="{{hasHighRisk}}" class="risk-warning">心理中心会优先审核。若此刻存在危险，请立即使用紧急求助渠道。</view>
+    <view class="emergency-entry" bindtap="openEmergency">
+      <icon type="warn" size="24" color="#e85a47" />
+      <view class="emergency-copy">如你此刻需要帮助，请查看紧急求助方式</view>
+      <view class="entry-action">查看</view>
+    </view>
   </view>
 
-  <view class="bottom-action">
-    <button class="primary-button" loading="{{submitting}}" disabled="{{submitting}}" bindtap="submit">提交预约</button>
+  <view class="consent-row" bindtap="openConsent">
+    <icon type="{{consentAgreed ? 'success' : 'info'}}" size="24" color="{{consentAgreed ? '#167a6e' : '#748388'}}" />
+    <view class="consent-copy">
+      <text>我已阅读并同意</text>
+      <text class="consent-link">《心理咨询服务知情同意书{{consentVersionNo ? '（' + consentVersionNo + '）' : ''}}》</text>
+    </view>
+    <view class="consent-state">{{consentAgreed ? '已阅读' : '去阅读'}}</view>
+  </view>
+
+  <view class="bottom-action booking-bottom">
+    <view class="submit-hint {{canSubmit ? 'ready' : ''}}">
+      <icon type="{{canSubmit ? 'success' : 'info'}}" size="18" color="{{canSubmit ? '#167a6e' : '#748388'}}" />
+      <text>{{completionHint}}</text>
+    </view>
+    <button class="primary-button" loading="{{submitting}}" disabled="{{!canSubmit || submitting}}" bindtap="submit">提交预约</button>
   </view>
 </view>

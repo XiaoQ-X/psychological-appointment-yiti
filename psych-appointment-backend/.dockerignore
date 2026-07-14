@@ -1,0 +1,6 @@
+target
+.env
+logs
+uploads
+*.log
+Dockerfile*

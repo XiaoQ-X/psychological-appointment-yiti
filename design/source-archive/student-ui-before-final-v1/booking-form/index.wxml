@@ -1,0 +1,98 @@
+<view class="page with-bottom-action booking-page">
+  <view class="form-head">
+    <view class="form-kicker">预约信息</view>
+    <view class="page-title">填写预约信息</view>
+    <view class="page-subtitle">信息仅用于本次咨询安排和必要风险处理。</view>
+  </view>
+
+  <view class="panel summary-panel">
+    <view class="summary-topline">
+      <view class="summary-label">已选咨询</view>
+      <text class="summary-state">已选时段</text>
+    </view>
+    <view class="summary-counselor">{{counselorName}}</view>
+    <view class="summary-time">{{slotTime}}</view>
+  </view>
+
+  <view class="panel section form-panel">
+    <view class="form-section-heading">基本信息</view>
+    <view class="field-note">请按当前情况填写，方便咨询师提前了解你的需要。</view>
+
+    <view class="field">
+      <text class="field-label">是否首次咨询</text>
+      <radio-group class="choice-row" bindchange="onFirstVisitChange">
+        <label class="choice"><radio value="true" checked="{{firstVisit}}" />是</label>
+        <label class="choice"><radio value="false" checked="{{!firstVisit}}" />否</label>
+      </radio-group>
+    </view>
+
+    <view class="field">
+      <view class="field-label-row"><text class="field-label">主要困扰</text><text class="required-label">必填</text></view>
+      <checkbox-group class="choice-wrap" bindchange="onIssueChange">
+        <label wx:for="{{issueOptions}}" wx:key="value" class="choice chip-choice">
+          <checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.label}}
+        </label>
+      </checkbox-group>
+    </view>
+
+    <view class="field">
+      <view class="field-label-row"><text class="field-label">情况说明</text><text class="required-label">必填</text></view>
+      <textarea class="textarea" maxlength="1000" placeholder="简要描述当前困扰和希望咨询师了解的背景" value="{{description}}" bindinput="onDescriptionInput" />
+    </view>
+
+    <view class="field">
+      <view class="field-label-row"><text class="field-label">期待获得的帮助</text><text class="optional-label">选填</text></view>
+      <textarea class="textarea" maxlength="1000" placeholder="例如：梳理压力来源、制定调整计划" value="{{expectedHelp}}" bindinput="onExpectedHelpInput" />
+    </view>
+
+    <view class="field">
+      <text class="field-label">紧急程度</text>
+      <picker mode="selector" range="{{urgencyLabels}}" value="{{urgencyIndex}}" bindchange="onUrgencyChange">
+        <view class="input picker-text">{{urgencyLabels[urgencyIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="field">
+      <text class="field-label">方便联系时间</text>
+      <input class="input" placeholder="如：工作日下午" value="{{contactTime}}" bindinput="onContactTimeInput" />
+    </view>
+  </view>
+
+  <view class="panel section form-panel risk-panel">
+    <view class="section-head">
+      <view>
+        <view class="form-section-heading">风险筛查</view>
+        <view class="field-note">如实勾选即可，系统会帮助心理中心优先处理。</view>
+      </view>
+      <view class="inline-link" bindtap="openEmergency">紧急求助</view>
+    </view>
+    <checkbox-group class="risk-list" bindchange="onRiskChange">
+      <label wx:for="{{riskOptions}}" wx:key="value" class="risk-item">
+        <checkbox value="{{item.value}}" checked="{{item.checked}}" />{{item.label}}
+      </label>
+    </checkbox-group>
+    <view wx:if="{{hasHighRisk}}" class="risk-warning">
+      你提交后将进入优先审核流程。若当前情况紧急，请立即联系线下人员或拨打紧急电话。
+    </view>
+  </view>
+
+  <view class="panel section consent-panel">
+    <view class="consent-heading">
+      <view class="consent-kicker">提交前确认</view>
+      <view class="consent-version">{{consentVersionNo ? '已完成' : '必填'}}</view>
+    </view>
+    <view class="consent-row">
+      <checkbox checked="{{consentAgreed}}" bindtap="toggleConsent" />
+      <view class="consent-copy">
+        <text>我已阅读并同意</text>
+        <text class="inline-link" bindtap="openConsent">心理咨询知情同意说明</text>
+        <text>，确认提交的信息真实有效。</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-action">
+    <view class="submit-hint {{canSubmit ? 'ready' : ''}}">{{completionHint}}</view>
+    <button class="primary-button {{!canSubmit || submitting ? 'disabled' : ''}}" loading="{{submitting}}" disabled="{{!canSubmit || submitting}}" bindtap="submit">提交预约</button>
+  </view>
+</view>
