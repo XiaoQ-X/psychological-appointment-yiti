@@ -32,7 +32,7 @@ docker compose --env-file .env -f docker-compose.prod.yml build
 docker compose --env-file .env -f docker-compose.prod.yml up -d
 ```
 
-`image-lock.json` 是生产第三方镜像的审核清单。生产 Compose 必须使用清单中的不可变 `@sha256` 引用；`verify_image_pins.py` 会失败关闭地校验 Compose 与清单完全一致，并确认锁定 OCI 索引仍绑定已审核平台的 SLSA provenance attestation。升级 Redis 时必须重新核对官方镜像版本、源代码修订和摘要，更新清单后由另一位维护者复核，禁止只修改 Compose 标签。
+`image-lock.json` 是生产第三方镜像的审核清单。生产 Compose 必须使用清单中的不可变 `@sha256` 引用；`verify_image_pins.py` 会失败关闭地校验 Compose 与清单完全一致，并确认锁定 OCI 索引仍绑定已审核平台的 SLSA provenance attestation。升级 MySQL 或 Redis 时必须重新核对官方镜像版本、源代码修订和摘要，更新清单后由另一位维护者复核，禁止只修改 Compose 标签。
 
 当前 Docker Official Image 的 OCI provenance 可验证其构建来源记录，但本项目尚未配置独立的发布者签名信任根。若学校上线规范要求发布者身份的密码学验证，应改用提供可验证签名的镜像来源，并在发布流水线或集群准入策略中强制验签。
 

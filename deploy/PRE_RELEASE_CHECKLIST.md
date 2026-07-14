@@ -7,7 +7,7 @@
 - [ ] 将小程序 `config/index.js` 的 API 地址改为正式 HTTPS 地址，并完成体验版真机回归。
 - [ ] 在微信公众平台核对 AppID `wx8b1d65e32bbb4bf8` 的主体、类目、隐私保护指引和用户信息处理说明。
 - [ ] 生产环境所有 `CHANGE_ME` 已替换，且密钥来自密码管理系统或受控 Secret 服务。
-- [ ] `python deploy/verify_image_pins.py --verify-registry` 通过，Redis 的摘要、版本、源代码修订和 provenance 审核记录已由第二位维护者复核。
+- [ ] `python deploy/verify_image_pins.py --verify-registry` 通过，MySQL 与 Redis 的摘要、版本、源代码修订和 provenance 审核记录已由第二位维护者复核。
 - [ ] 生产 Profile 启动时未启用管理员自动初始化。
 - [ ] MySQL 迁移已在脱敏副本演练，已生成加密备份并验证恢复。
 - [ ] Redis、MySQL 和后端端口未直接暴露到公网。
@@ -23,7 +23,7 @@
 - [ ] 后台 `npm ci && npm run lint && npm run build` 通过。
 - [ ] 小程序所有 JavaScript 文件通过语法检查，微信开发者工具无错误日志。
 - [ ] Docker Compose 配置校验、镜像构建和健康检查通过。
-- [ ] 运行中的 Redis `RepoDigests` 与 `deploy/image-lock.json` 完全一致。
+- [ ] 运行中的 MySQL 与 Redis `RepoDigests` 与 `deploy/image-lock.json` 完全一致。
 - [ ] 体验版在 iOS/Android 各完成一次真实网络回归。
 - [ ] 监控告警、备份周期、恢复负责人和事故联系人已落实。
 - [ ] 形成版本号、Git 提交、数据库迁移版本和发布审批记录。

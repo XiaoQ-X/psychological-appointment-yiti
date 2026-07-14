@@ -19,41 +19,60 @@ class ImagePinVerificationTest(unittest.TestCase):
         cls.lock = json.loads((DEPLOY_DIR / "image-lock.json").read_text(encoding="utf-8"))
         cls.entry = cls.lock["images"]["redis"]
 
-    def test_accepts_exact_compose_pin(self) -> None:
-        config = {"services": {"redis": {"image": self.entry["reference"]}}}
-
-        messages = validate_compose(self.lock, config)
-
-        self.assertEqual(1, len(messages))
-
-    def test_rejects_mutable_tag(self) -> None:
-        config = {"services": {"redis": {"image": self.entry["tag"]}}}
-
-        with self.assertRaisesRegex(ValidationError, "must use"):
-            validate_compose(self.lock, config)
-
-    def test_rejects_digest_mismatch(self) -> None:
-        wrong_digest = "sha256:" + "0" * 64
-        config = {
+    def exact_config(self) -> dict:
+        return {
             "services": {
-                "redis": {"image": f"{self.entry['tag']}@{wrong_digest}"}
+                service: {"image": entry["reference"]}
+                for service, entry in self.lock["images"].items()
             }
         }
 
-        with self.assertRaisesRegex(ValidationError, "must use"):
-            validate_compose(self.lock, config)
+    def test_accepts_exact_compose_pin(self) -> None:
+        config = self.exact_config()
+
+        messages = validate_compose(self.lock, config)
+
+        self.assertEqual(len(self.lock["images"]), len(messages))
+
+    def test_rejects_mutable_tag(self) -> None:
+        for service, entry in self.lock["images"].items():
+            with self.subTest(service=service):
+                config = self.exact_config()
+                config["services"][service]["image"] = entry["tag"]
+
+                with self.assertRaisesRegex(ValidationError, "must use"):
+                    validate_compose(self.lock, config)
+
+    def test_rejects_digest_mismatch(self) -> None:
+        wrong_digest = "sha256:" + "0" * 64
+        for service, entry in self.lock["images"].items():
+            with self.subTest(service=service):
+                config = self.exact_config()
+                config["services"][service]["image"] = (
+                    f"{entry['tag']}@{wrong_digest}"
+                )
+
+                with self.assertRaisesRegex(ValidationError, "must use"):
+                    validate_compose(self.lock, config)
 
     def test_rejects_lock_without_provenance(self) -> None:
         lock = copy.deepcopy(self.lock)
         del lock["images"]["redis"]["provenance"]
-        config = {"services": {"redis": {"image": self.entry["reference"]}}}
+        config = self.exact_config()
 
         with self.assertRaisesRegex(ValidationError, "missing provenance"):
             validate_compose(lock, config)
 
+    def test_rejects_lock_without_platform_digest(self) -> None:
+        lock = copy.deepcopy(self.lock)
+        del lock["images"]["redis"]["provenance"]["platformManifestDigest"]
+
+        with self.assertRaisesRegex(ValidationError, "invalid platform digest"):
+            validate_compose(lock, self.exact_config())
+
     def test_rejects_attestation_without_reviewed_predicate(self) -> None:
-        platform_digest = "sha256:" + "1" * 64
         provenance = self.entry["provenance"]
+        platform_digest = provenance["platformManifestDigest"]
         index = {
             "mediaType": "application/vnd.oci.image.index.v1+json",
             "manifests": [
@@ -81,6 +100,22 @@ class ImagePinVerificationTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValidationError, "missing predicate"):
             validate_registry_documents("redis", self.entry, index, attestation)
+
+    def test_rejects_unreviewed_platform_manifest(self) -> None:
+        provenance = self.entry["provenance"]
+        actual_platform_digest = "sha256:" + "1" * 64
+        index = {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "manifests": [
+                {
+                    "digest": actual_platform_digest,
+                    "platform": provenance["platform"],
+                }
+            ],
+        }
+
+        with self.assertRaisesRegex(ValidationError, "reviewed platform"):
+            validate_registry_documents("redis", self.entry, index, {"layers": []})
 
 
 if __name__ == "__main__":
